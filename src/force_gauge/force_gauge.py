@@ -200,9 +200,11 @@ class ForceGauge:  # pylint: disable=too-many-instance-attributes
         sensor_reading, unit, update_time = self.read_gauge()
         conversion_factor = 1  # default to Newtons
         if unit == "g":
+            # convert grams to Newtons
             conversion_factor = ForceGauge.CONSTANT_g * 1e-3
         elif unit == "kg":
-            return sensor_reading * ForceGauge.CONSTANT_g
+            # convert kg to Newtons
+            conversion_factor = sensor_reading * ForceGauge.CONSTANT_g
         return sensor_reading * conversion_factor, update_time
 
     def signal_handler(self, sig, frame):  # pylint: disable=unused-argument
