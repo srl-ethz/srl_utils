@@ -5,8 +5,11 @@ import time
 
 
 class Rate:
+    """Rate object to sleep in a loop to maintain a constant rate."""
+
     def __init__(self, period_sec: float, warn_threshold: float = 0.1):
-        """Rate object to sleep in a loop to maintain a constant rate.
+        """Initialize the rate object.
+
         :param period_sec: The period in seconds.
         :param warn_threshold: The threshold to print a warning if the rate is slower than the period.
         """
@@ -15,7 +18,7 @@ class Rate:
         self._last_time = time.monotonic()
 
     def sleep(self):
-        """Sleeps to maintain the rate."""
+        """Sleep to maintain the rate."""
         sleep_time = self._last_time + self._period_sec - time.monotonic()
         if sleep_time > 0:
             time.sleep(sleep_time)
@@ -24,11 +27,12 @@ class Rate:
         self._last_time = time.monotonic()
 
 
-def get_datetime_str(time_start: datetime.datetime = None) -> str:
-    """Returns a string of the current date and time.
+def get_datetime_str(
+    time_start: datetime.datetime = datetime.datetime.now(),
+) -> str:
+    """Return a string of the current date and time.
+
     :param time_start: The start time.(Optional)
     :return: The string of the current date and time.
     """
-    if time_start is None:
-        time_start = datetime.datetime.now()
     return time_start.strftime("%Y%m%d%H%M%S")
