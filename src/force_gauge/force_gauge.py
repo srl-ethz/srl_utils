@@ -62,8 +62,8 @@ class ForceGauge:  # pylint: disable=too-many-instance-attributes
     def _update_gauge_state_machine(
         self,
     ):  # pylint: disable=too-many-branches, disable=too-many-statements
-    #  Justification: the branches are necessary to handle the state machine.
-    #  Justification: doesn't make sense to break this up into smaller functions.
+        #  Justification: the branches are necessary to handle the state machine.
+        #  Justification: doesn't make sense to break this up into smaller functions.
         """Update state machine based on received data from force gauge."""
         new_byte = self._read_next_byte()
 
