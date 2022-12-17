@@ -1,6 +1,9 @@
 """ Utility class for reading force gauge data
 Works with the RS-Pro 111-3689 1-axis Force Gauge.
-The force gauge is connected to the computer via a 3.5mm single channel audio jack that is wired to a DB9 connector (see specification in docs/force_gauge-datasheet.pdf) through an RS-232 to USB converter.
+The force gauge is connected to the computer via a 3.5mm single channel
+audio jack that is wired to a DB9 connector
+(see specification in docs/force_gauge-datasheet.pdf) through an RS-232 
+to USB converter.
 """
 
 import signal
@@ -31,7 +34,9 @@ class ForceGauge:
         self.force_updated_time = 0
 
         self.exit_trigerred = threading.Event()
-        self.update_state_thread = threading.Thread(target=self.update_state_loop)
+        self.update_state_thread = threading.Thread(
+            target=self.update_state_loop
+        )
         # self.update_state_freq = 50
         self.update_state_thread.start()
 
@@ -68,7 +73,9 @@ class ForceGauge:
             if new_byte == b"4":
                 self._byte_index += 1
             else:
-                print(f"ERROR: Expected '4' but received {str(new_byte)} instead")
+                print(
+                    f"ERROR: Expected '4' but received {str(new_byte)} instead"
+                )
                 self._byte_index = 0
 
         # D13: expect '1'
@@ -76,7 +83,9 @@ class ForceGauge:
             if new_byte == b"1":
                 self._byte_index += 1
             else:
-                print(f"ERROR: Expected '1' but received {str(new_byte)} instead")
+                print(
+                    f"ERROR: Expected '1' but received {str(new_byte)} instead"
+                )
                 self._byte_index = 0
 
         # D12: expect '5'
@@ -84,7 +93,9 @@ class ForceGauge:
             if new_byte == b"5":
                 self._byte_index += 1
             else:
-                print(f"ERROR: Expected '5' but received {str(new_byte)} instead")
+                print(
+                    f"ERROR: Expected '5' but received {str(new_byte)} instead"
+                )
                 self._byte_index = 0
 
         # D11: set unit of force
