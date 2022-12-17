@@ -1,9 +1,9 @@
-""" Utility class for reading force gauge data
+"""Utility class for reading force gauge data.
+
 Works with the RS-Pro 111-3689 1-axis Force Gauge.
 The force gauge is connected to the computer via a 3.5mm single channel
-audio jack that is wired to a DB9 connector
-(see specification in docs/force_gauge-datasheet.pdf) through an RS-232 
-to USB converter.
+audio jack that is wired to a DB9 connector (see specification in
+docs/force_gauge-datasheet.pdf) through an RS-232 to USB converter.
 """
 
 import signal
@@ -15,12 +15,14 @@ import serial
 
 
 class ForceGauge:
+    """Utility class for reading force gauge data."""
+
     START_WORD = b"\x02"
     END_WORD = b"\r"
     CONSTANT_g = 9.810
 
-    def __init__(self, port="/dev/ttyUSB0", baudrate=9600):
-        """Initialize serial port to connect to force gauge"""
+    def __init__(self, port: str = "/dev/ttyUSB0", baudrate: int = 9600):
+        """Initialize serial port to connect to force gauge."""
         self.serial = serial.Serial(port=port, baudrate=baudrate)
 
         self._byte_index = 0
@@ -35,27 +37,30 @@ class ForceGauge:
 
         self.exit_trigerred = threading.Event()
         self.update_state_thread = threading.Thread(
-            target=self.update_state_loop
+            target=self._update_state_loop
         )
         # self.update_state_freq = 50
         self.update_state_thread.start()
 
-    def read_next_byte(self):
-        """Read and return data from gauge and handle errors"""
+    def _read_next_byte(self):
+        """Read and return data from gauge and handle errors."""
         new_byte = self.serial.read()
         return new_byte
 
-    def update_state_loop(self):
-        """"""
+    def _update_state_loop(self):
+        """Read force gauge data and update state machine based on received data.
+
+        Called by a thread to continuously update the state machine.
+        """
         while not self.exit_trigerred.is_set():
             try:
-                self.update_gauge_state_machine()
+                self._update_gauge_state_machine()
             except ValueError as e:
                 print(e)
             # time.sleep(1.0 / self.update_state_freq)
 
-    def update_gauge_state_machine(self):
-        new_byte = self.read_next_byte()
+    def _update_gauge_state_machine(self):
+        new_byte = self._read_next_byte()
         # print(f"idx: {self._byte_index} --> {str(new_byte)}")
 
         # D15: Start Word
@@ -178,6 +183,10 @@ class ForceGauge:
                 self._byte_index = 0
 
     def read_gauge(self):
+        """Thread-safe function to read force gauge data.
+
+        Returns: force value, unit (as set on the force gauge), time since last update.
+        """
         with self.gauge_lock:
             return (
                 self.force_val,
@@ -186,6 +195,7 @@ class ForceGauge:
             )
 
     def read_force(self):
+        """Thread-safe function to read force in Newtons."""
         sensor_reading, unit, update_time = self.read_gauge()
         if unit == "g":
             return sensor_reading * ForceGauge.CONSTANT_g * 1e-3, update_time
@@ -197,10 +207,11 @@ class ForceGauge:
             # Sometimes the sensor take some time to initialize
             # and during this time the unit is set to None
             # Assume grams?
-            # TODO(@gavin): Error handling
+            # TODO(@gavincangan): Error handling
             return sensor_reading * ForceGauge.CONSTANT_g * 1e-3, update_time
 
     def signal_handler(self, sig, frame):
+        """Handle SIGINT signal."""
         self.exit_trigerred.set()
         self.update_state_thread.join()
         sys.exit(0)
@@ -212,10 +223,9 @@ if __name__ == "__main__":
 
     while not fg.exit_trigerred.is_set():
         try:
-            # print(f"Force gauge reading: {fg.read_force()}")
             print(f"Force gauge reading: {fg.read_gauge()}")
             time.sleep(0.1)
         except NotImplementedError:
-            print(f"Caught NotImplementedError")
+            print("Caught NotImplementedError")
             fg.exit_trigerred.set()
     fg.update_state_thread.join()
