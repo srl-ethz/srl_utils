@@ -15,6 +15,7 @@ import serial
 
 
 class ForceGauge:  # pylint: disable=too-many-instance-attributes
+    # Justification: these attributes are needed to handle the force sensor state machine.
     """Utility class for reading force gauge data."""
 
     START_WORD = b"\x02"
@@ -61,6 +62,8 @@ class ForceGauge:  # pylint: disable=too-many-instance-attributes
     def _update_gauge_state_machine(
         self,
     ):  # pylint: disable=too-many-branches, disable=too-many-statements
+    #  Justification: the branches are necessary to handle the state machine.
+    #  Justification: doesn't make sense to break this up into smaller functions.
         """Update state machine based on received data from force gauge."""
         new_byte = self._read_next_byte()
 
@@ -208,6 +211,7 @@ class ForceGauge:  # pylint: disable=too-many-instance-attributes
         return sensor_reading * conversion_factor, update_time
 
     def signal_handler(self, sig, frame):  # pylint: disable=unused-argument
+        #  Justification: arguments are required by signal.signal
         """Handle SIGINT signal."""
         self.exit_trigerred.set()
         self.update_state_thread.join()
