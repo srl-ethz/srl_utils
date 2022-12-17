@@ -55,13 +55,11 @@ class ForceGauge:
         while not self.exit_trigerred.is_set():
             try:
                 self._update_gauge_state_machine()
-            except ValueError as e:
-                print(e)
-            # time.sleep(1.0 / self.update_state_freq)
+            except ValueError as error:
+                print(error)
 
     def _update_gauge_state_machine(self):
         new_byte = self._read_next_byte()
-        # print(f"idx: {self._byte_index} --> {str(new_byte)}")
 
         # D15: Start Word
         if self._byte_index == 0:
