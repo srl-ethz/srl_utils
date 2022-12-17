@@ -14,7 +14,7 @@ import time
 import serial
 
 
-class ForceGauge:
+class ForceGauge:  # pylint: disable=too-many-instance-attributes
     """Utility class for reading force gauge data."""
 
     START_WORD = b"\x02"
@@ -58,7 +58,10 @@ class ForceGauge:
             except ValueError as error:
                 print(error)
 
-    def _update_gauge_state_machine(self):
+    def _update_gauge_state_machine(
+        self,
+    ):  # pylint: disable=too-many-branches, disable=too-many-statements
+        """Update state machine based on received data from force gauge."""
         new_byte = self._read_next_byte()
 
         # D15: Start Word
@@ -148,7 +151,7 @@ class ForceGauge:
         elif self._byte_index == 6:
             # No dp
             floatingpoint_position = int(new_byte)
-            if floatingpoint_position >= 0 and floatingpoint_position < 4:
+            if 0 <= floatingpoint_position < 4:
                 self.force_decimal = 10 ** (-floatingpoint_position)
                 self._byte_index += 1
             else:
@@ -195,20 +198,14 @@ class ForceGauge:
     def read_force(self):
         """Thread-safe function to read force in Newtons."""
         sensor_reading, unit, update_time = self.read_gauge()
+        conversion_factor = 1  # default to Newtons
         if unit == "g":
-            return sensor_reading * ForceGauge.CONSTANT_g * 1e-3, update_time
-        elif unit == "Newton":
-            return sensor_reading, update_time
+            conversion_factor = ForceGauge.CONSTANT_g * 1e-3
         elif unit == "kg":
-            return sensor_reading * ForceGauge.CONSTANT_g, update_time
-        else:
-            # Sometimes the sensor take some time to initialize
-            # and during this time the unit is set to None
-            # Assume grams?
-            # TODO(@gavincangan): Error handling
-            return sensor_reading * ForceGauge.CONSTANT_g * 1e-3, update_time
+            return sensor_reading * ForceGauge.CONSTANT_g
+        return sensor_reading * conversion_factor, update_time
 
-    def signal_handler(self, sig, frame):
+    def signal_handler(self, sig, frame):  # pylint: disable=unused-argument
         """Handle SIGINT signal."""
         self.exit_trigerred.set()
         self.update_state_thread.join()
