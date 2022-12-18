@@ -29,6 +29,7 @@ import cv2
     "--filepath",
     "-f",
     help="Video filepath.",
+    required=True,
 )
 @click.option("--fps", default=30, help="Frames per second.")
 def scroll_thru_video(filepath: str, fps: int):
@@ -47,12 +48,13 @@ def scroll_thru_video(filepath: str, fps: int):
     def on_change(trackbar_value: int):
         trackbar_value = clip_to_range(trackbar_value)
         cap.set(cv2.CAP_PROP_POS_FRAMES, trackbar_value)
-        err, img = cap.read()
+        # Read the frame at the current position
+        err, img = cap.read()  # pylint: disable=unused-variable
         cv2.imshow(win_title, img)
 
     cv2.namedWindow(win_title, cv2.WINDOW_NORMAL)
     cv2.createTrackbar("start", win_title, 0, length, on_change)
-    cv2.createTrackbar("end", win_title, length - 1, length, on_change)
+    cv2.createTrackbar("end", win_title, length, length, on_change)
 
     on_change(0)
     cv2.waitKey()
@@ -69,7 +71,7 @@ def scroll_thru_video(filepath: str, fps: int):
         err, img = cap.read()
         if cap.get(cv2.CAP_PROP_POS_FRAMES) >= end:
             break
-        cv2.imshow("Video", img)
+        cv2.imshow(win_title, img)
         key_ESC = 27  # ASCII code for ESC
         key_pressed = cv2.waitKey(wait_time) & 0xFF
         if key_pressed == key_ESC:
