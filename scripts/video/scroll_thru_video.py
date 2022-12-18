@@ -63,7 +63,7 @@ def scroll_thru_video(filepath: str, fps: int):
     start = clip_to_range(cv2.getTrackbarPos("start", win_title))
     end = clip_to_range(cv2.getTrackbarPos("end", win_title))
 
-    wait_time = int(1000.0 / fps)
+    wait_time_msec = int(1000.0 / fps)
     if start >= end:
         raise Exception(f"start: {start} must be less than end: {end}")
 
@@ -74,7 +74,7 @@ def scroll_thru_video(filepath: str, fps: int):
             break
         cv2.imshow(win_title, img)
         key_ESC = 27  # ASCII code for ESC
-        key_pressed = cv2.waitKey(wait_time) & 0xFF
+        key_pressed = cv2.waitKey(wait_time_msec) & 0xFF
         if key_pressed == key_ESC:
             break
 
