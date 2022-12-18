@@ -31,7 +31,7 @@ import cv2
     help="Video filepath.",
 )
 @click.option("--fps", default=30, help="Frames per second.")
-def scrollThruVideo(filepath: str, fps: int):
+def scroll_thru_video(filepath: str, fps: int):
     """Scroll through a video using trackbars.
 
     Args:
@@ -40,24 +40,29 @@ def scrollThruVideo(filepath: str, fps: int):
     """
     cap = cv2.VideoCapture(filepath)
     length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    win_title = f"Video - {filepath} @ {fps} fps"
 
-    def onChange(trackbar_value: int):
+    clip_to_range = lambda val: min(length - 1, max(0, val))
+
+    def on_change(trackbar_value: int):
+        trackbar_value = clip_to_range(trackbar_value)
         cap.set(cv2.CAP_PROP_POS_FRAMES, trackbar_value)
         err, img = cap.read()
-        cv2.imshow("Video", img)
+        cv2.imshow(win_title, img)
 
-    cv2.namedWindow("Video")
-    cv2.createTrackbar("start", "Video", 10, length, onChange)
-    cv2.createTrackbar("end", "Video", 100, length, onChange)
+    cv2.namedWindow(win_title, cv2.WINDOW_NORMAL)
+    cv2.createTrackbar("start", win_title, 0, length, on_change)
+    cv2.createTrackbar("end", win_title, length - 1, length, on_change)
 
-    onChange(0)
+    on_change(0)
     cv2.waitKey()
 
-    start = cv2.getTrackbarPos("start", "Video")
-    end = cv2.getTrackbarPos("end", "Video")
+    start = clip_to_range(cv2.getTrackbarPos("start", win_title))
+    end = clip_to_range(cv2.getTrackbarPos("end", win_title))
+
     wait_time = int(1000.0 / fps)
     if start >= end:
-        raise Exception("start must be less than end")
+        raise Exception(f"start: {start} must be less than end: {end}")
 
     cap.set(cv2.CAP_PROP_POS_FRAMES, start)
     while cap.isOpened():
@@ -74,4 +79,4 @@ def scrollThruVideo(filepath: str, fps: int):
 
 
 if __name__ == "__main__":
-    scrollThruVideo()
+    scroll_thru_video()
