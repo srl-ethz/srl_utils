@@ -1,3 +1,5 @@
+click==8.1.2
+opencv-python==4.6.0.66
 pdoc3==0.9.2
 pre-commit==2.20.0
 pyserial==3.5
