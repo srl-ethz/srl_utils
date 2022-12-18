@@ -46,6 +46,7 @@ def scroll_thru_video(filepath: str, fps: int):
     clip_to_range = lambda val: min(length - 1, max(0, val))
 
     def on_change(trackbar_value: int):
+        """Callback for trackbar changes."""
         trackbar_value = clip_to_range(trackbar_value)
         cap.set(cv2.CAP_PROP_POS_FRAMES, trackbar_value)
         # Read the frame at the current position
