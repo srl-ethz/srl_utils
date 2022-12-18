@@ -4,14 +4,15 @@ import datetime
 import time
 
 
-class Rate:
+class Rate:  # pylint: disable=too-few-public-methods
     """Rate object to sleep in a loop to maintain a constant rate."""
 
     def __init__(self, period_sec: float, warn_threshold: float = 0.1):
         """Initialize the rate object.
 
         :param period_sec: The period in seconds.
-        :param warn_threshold: The threshold to print a warning if the rate is slower than the period.
+        :param warn_threshold: The threshold to print a warning if the rate is
+            slower than the period.
         """
         self._period_sec = period_sec
         self._warn_threshold_sec = -1 * warn_threshold * period_sec
