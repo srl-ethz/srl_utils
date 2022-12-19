@@ -28,16 +28,18 @@ from v4l2py import Device
 #                      focus_auto (bool)   : default=1 value=1
 #                   zoom_absolute (int)    : min=100 max=500 step=1 default=57343 value=100
 
-# useful functions to control the camera
-# v4l-utils required: sudo apt install v4l-utils
 
-def disable_auto_focus(id):
+# useful functions to set the camera parameters
+# If camera intrinsic is to be used, disable auto focus and manually set a focus 
+# to make sure focus remain constant
+# v4l-utils required: sudo apt install v4l-utils
+def disable_auto_focus(id: int):
     subprocess.call([f'v4l2-ctl  -d {id} --set-ctrl=focus_auto=0' ], shell=True)
 
-def enable_auto_focus(id):
+def enable_auto_focus(id: int):
     subprocess.call([f'v4l2-ctl  -d {id} --set-ctrl=focus_auto=1' ], shell=True)
 
-def set_focus(id, focus):
+def set_focus(id: int, focus: int):
     subprocess.call([f'v4l2-ctl  -d {id} --set-ctrl=focus_absolute={focus}' ], shell=True)
 
 
