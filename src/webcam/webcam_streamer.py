@@ -36,17 +36,30 @@ class webCamStreamer:
         self.thread.start()
         
     def update(self):
+        """Function that runs on another thread to update most recent frame.
+        """
         while not self.webcam_stop.isSet():
             for index, frame_byte in enumerate(self.cam):
-                a = frame_byte.find(b'\xff\xd8')
+                # JPEG signiture, for details, see https://en.wikipedia.org/wiki/JPEG_File_Interchange_Format
+                # ff d8: Start of Image
+                # ff d9: End of Image
+                a = frame_byte.find(b'\xff\xd8') 
                 b = frame_byte.find(b'\xff\xd9')
                 if a != -1 and b != -1:
                     jpg = frame_byte[a:b+2]
                     frame_byte = frame_byte[b+2:]
+                    # convert image string to cv2 datatype and save to the self.frame
                     self.frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
 
     def get_frame(self):
+        """Get most recent frame
+
+        Returns:
+            cv2.Mat: copy of most recent frame 
+        """
         return self.frame.copy()
 
     def stop(self):
+        """set webcam_stop event and stop updating frames
+        """
         self.webcam_stop.set()
