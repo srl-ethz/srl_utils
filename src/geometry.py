@@ -32,7 +32,7 @@ def camera_unproject_pixel_to_world(
     points_undistorted = np.array([])
     if len(points2d) > 0:
         points_undistorted = cv2.undistortPoints(
-            np.expand_dims(points2d, axis=1),
+            np.expand_dims(points2d, axis=1).astype(np.float64),
             camera_intrinsic,
             distortion,
             P=camera_intrinsic,
