@@ -150,6 +150,6 @@ def quaternion_distance(quat1:np.array, quat2:np.array):
     Returns:
         float: angular distance between q1 and q2 in radians
     """
-    q1_dot_q2 = np.dot(quat1, quat2)
+    quat1_dot_quat2 = np.dot(quat1, quat2)
     # angular distance
-    return np.arccos(2 * np.power(q1_dot_q2, 2) - 1)
+    return np.arccos(2 * np.power(quat1_dot_quat2, 2) - 1)
