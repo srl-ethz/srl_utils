@@ -147,8 +147,8 @@ def quaternion_distance(quat1: np.array, quat2: np.array):
     source: https://math.stackexchange.com/a/90098
 
     Args:
-        q1 (array(4*1)): quaternion 1
-        q2 (array(4*1)): quaternion 2
+        q1 (array(4*1)): quaternion 1, (x, y, z, w)
+        q2 (array(4*1)): quaternion 2, (x, y, z, w)
 
     Returns:
         float: angular distance between q1 and q2 in radians
