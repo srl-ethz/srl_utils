@@ -5,7 +5,7 @@ import numpy as np
 
 
 def camera_unproject_pixel_to_world(
-    points2d, Z, camera_intrinsic, distortion
+    points2d:np.array, Z:np.array, camera_intrinsic:np.array, distortion:np.array
 ):  # pylint: disable=invalid-name
     # Justification:
     # the variable names here are a proper representation in mathematical expressions
@@ -49,7 +49,7 @@ def camera_unproject_pixel_to_world(
     return result
 
 
-def camera_project_3d_to_pixel(point_3d, intrinsics):
+def camera_project_3d_to_pixel(point_3d:np.array, intrinsics:np.array):
     """Project a 3d point in camera frame to pixel coordinates using camera intrinsics.
 
     Args:
@@ -65,7 +65,7 @@ def camera_project_3d_to_pixel(point_3d, intrinsics):
 
 
 def project_points_to_plane(
-    points3d, center, S
+    points3d:np.array, center:np.array, S:np.array
 ):  # pylint: disable=invalid-name too-many-locals
     # Justification:
     # the variable name here are a proper representation in mathematical expressions
@@ -111,12 +111,12 @@ def project_points_to_plane(
 
 
 # https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python
-def unit_vector(vector):
+def unit_vector(vector:np.array):
     """Return the unit vector of the vector."""
     return vector / np.linalg.norm(vector)
 
 
-def angle_between(vector1, vector2):
+def angle_between(vector1:np.array, vector2:np.array):
     """Return the angle in radians between vectors 'v1' and 'v2'.
 
     Examples:
@@ -138,7 +138,7 @@ def angle_between(vector1, vector2):
     return np.arccos(np.clip(np.dot(vector1_u, vector2_u), -1.0, 1.0))
 
 
-def quaternion_distance(quat1, quat2):
+def quaternion_distance(quat1:np.array, quat2:np.array):
     """Return the angular distance between two quaternions q1 and q2.
 
     source: https://math.stackexchange.com/a/90098
