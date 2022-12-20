@@ -1,13 +1,9 @@
-import subprocess
 import time
 
 import cv2
 import numpy as np
 import rospy
-from cv_bridge import CvBridge
 from detector import Detector
-from sensor_msgs.msg import CompressedImage, Image
-from v4l2py import Device
 from webcam_streamer import (disable_auto_focus, enable_auto_focus, set_focus,
                              webCamStreamer)
 
