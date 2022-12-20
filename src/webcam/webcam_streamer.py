@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 """WebCamStreamer Object, streamming images from an external webcam"""
 import subprocess
-import time
 from threading import Event, Thread
 
 import cv2
@@ -85,8 +84,8 @@ class webCamStreamer:
                 a = frame_byte.find(b"\xff\xd8")
                 b = frame_byte.find(b"\xff\xd9")
                 if a != -1 and b != -1:
-                    jpg = frame_byte[a : b + 2]
-                    frame_byte = frame_byte[b + 2 :]
+                    jpg = frame_byte[a: b + 2]
+                    frame_byte = frame_byte[b + 2:]
                     # convert image string to cv2 datatype and save to the self.frame
                     self.frame = cv2.imdecode(
                         np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR

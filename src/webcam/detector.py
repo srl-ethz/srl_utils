@@ -1,17 +1,18 @@
 #! /usr/bin/env python3
+"""Detector class of the marker"""
 import math
 
 import cv2
 import numpy as np
 
 
-def get_ROI_coordinates(pt: tuple, sizeImg: tuple, sizeROI: tuple):
+def get_roi_coordinates(pt: tuple, size_img: tuple, size_roi: tuple):
     """Return ROI range based on the center point and size of ROI.
 
     Args:
         pt (tuple): center of ROI
-        sizeImg (tuple ): Image Size
-        sizeROI (tuple): Size of ROI
+        size_img (tuple ): Image Size
+        size_roi (tuple): Size of ROI
 
     Returns:
         tuple(int, int, int, int): ROI coordinates, defined as (x, y, w, h)
@@ -22,21 +23,21 @@ def get_ROI_coordinates(pt: tuple, sizeImg: tuple, sizeROI: tuple):
     """
     roi = np.zeros(4)
 
-    roi[0] = pt[0] - sizeROI[0] / 2
+    roi[0] = pt[0] - size_roi[0] / 2
     if roi[0] < 0:
         roi[0] = 0
 
-    roi[1] = pt[1] - sizeROI[1] / 2
+    roi[1] = pt[1] - size_roi[1] / 2
     if roi[1] < 0:
         roi[1] = 0
 
-    roi[2] = sizeROI[0]
-    if roi[2] > sizeImg[0]:
-        roi[2] = sizeImg[0]
+    roi[2] = size_roi[0]
+    if roi[2] > size_img[0]:
+        roi[2] = size_img[0]
 
-    roi[3] = sizeROI[1]
-    if roi[3] > sizeImg[1]:
-        roi[3] = sizeImg[1]
+    roi[3] = size_roi[1]
+    if roi[3] > size_img[1]:
+        roi[3] = size_img[1]
 
     return roi.astype(np.int64)
 
@@ -74,13 +75,22 @@ def coord_xform_roi_to_img(pt: tuple, roi: tuple):
 class Detector:
     def __init__(self) -> None:
         # default parameters for Hough Transformations
-        self.min = 10
-        self.max = 20
+        self.min_r = 10
+        self.max_r = 20
         self.param2 = 25
         self.min_dist = 10
         self.hough_line_threshold = 10
         self.circles = np.array([])
 
+        # initialize attribute
+        self.file = ""
+        self.img = []
+        self.width = 0
+        self.height = 0
+        self.detected = False
+        self.center_x_list = []
+        self.center_y_list = []
+        
     def read_file(self, file_name: str):
         """Read image from a file.
 
@@ -104,15 +114,15 @@ class Detector:
         self.height = int(np.shape(self.img)[1] / 2)
         self.detected = False
 
-    def set_radii_range(self, min: int, max: int):
+    def set_radii_range(self, min_r: int, max_r: int):
         """Set radius range of hough circle transformation.
 
         Args:
             min (int): mininum radius to be detected, in pixel.
             max (int): maximum radius to be detected, in pixel.
         """
-        self.min = min
-        self.max = max
+        self.min_r = min_r
+        self.max_r = max_r
 
     def set_param2_kpt(self, p: float):
         """Set parameter 2 for hough circle transformation.
@@ -168,14 +178,14 @@ class Detector:
             updated_y_list = []
             updated_r_list = []
             for i in range(len(x_list)):
-                roi = get_ROI_coordinates(
+                roi = get_roi_coordinates(
                     (x_list[i], y_list[i]),
                     imageSize,
                     (region * r_list[i], region * r_list[i]),
                 )
                 local_gray_blured = gray_blured[
-                    int(roi[1]) : int(roi[1] + roi[3]),
-                    int(roi[0]) : int(roi[0] + roi[2]),
+                    int(roi[1]): int(roi[1] + roi[3]),
+                    int(roi[0]): int(roi[0] + roi[2]),
                 ]
                 local_circles = cv2.HoughCircles(
                     local_gray_blured,
@@ -184,8 +194,8 @@ class Detector:
                     self.min_dist,
                     param1=50,
                     param2=self.param2,
-                    minRadius=self.min,
-                    maxRadius=self.max,
+                    minRadius=self.min_r,
+                    maxRadius=self.max_r,
                 )
                 if local_circles is not None:
                     for local_circle in local_circles[0, :]:
@@ -213,8 +223,8 @@ class Detector:
                 self.min_dist,
                 param1=50,
                 param2=self.param2,
-                minRadius=self.min,
-                maxRadius=self.max,
+                minRadius=self.min_r,
+                maxRadius=self.max_r,
             )
             self.circles = np.array(circles)
 
@@ -239,12 +249,12 @@ class Detector:
             cx, cy, rad = circle
             dia = 2 * rad
             cv2.circle(self.img, (cx, cy), rad, (255, 0, 0), 1)
-            roi = get_ROI_coordinates(
+            roi = get_roi_coordinates(
                 (cx, cy), img_shape, (1.1 * dia, 1.1 * dia)
             )
             corner_x, corner_y, lh, lw = roi
             cropped_img = gray_blured[
-                corner_y : corner_y + lw, corner_x : corner_x + lh
+                corner_y: corner_y + lw, corner_x: corner_x + lh
             ]
             roi_imgs.append([roi, cropped_img])
 
@@ -387,7 +397,17 @@ class Detector:
         return self.img, length
 
     def get_center_x_list(self):
+        """get x coordinates of the detected markers.
+
+        Returns:
+            list: x coordinates of the detected markers
+        """
         return self.center_x_list
 
     def get_center_y_list(self):
+        """get y coordinates of the detected markers.
+
+        Returns:
+            list: y coordinates of the detected markers
+        """
         return self.center_y_list
