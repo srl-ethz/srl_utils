@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 import math
-import time
 
 import cv2
 import numpy as np
@@ -162,7 +161,6 @@ class Detector:
 
         region = 4
         if self.circles.size > 3:
-            # t1 = time.time()
             x_list = self.circles[:, :, 0][0]
             y_list = self.circles[:, :, 1][0]
             r_list = self.circles[:, :, 2][0]
@@ -202,15 +200,12 @@ class Detector:
                 [np.stack([updated_x_list, updated_y_list, updated_r_list]).T]
             )
             self.circles = circles
-            # t2 = time.time()
-            # print(f"partial circle:{t2-t1}")
 
             if self.circles.size / 3 != num:
                 self.circles = np.array([])
                 return self.img, 0
 
         else:
-            # t1 = time.time()
             circles = cv2.HoughCircles(
                 gray_blured,
                 cv2.HOUGH_GRADIENT,
@@ -222,8 +217,6 @@ class Detector:
                 maxRadius=self.max,
             )
             self.circles = np.array(circles)
-            # t2 = time.time()
-            # print(f"full circle:{t2-t1}")
 
         # Convert the detection results to interger array
         try:
@@ -239,7 +232,6 @@ class Detector:
         # Second step, using the HoughLine to find the intersection point within the circle
 
         # Construct ROI list along with images, HoughLine will be performed on these smaller ROI
-        # t1 = time.time()
         img_shape = np.shape(self.img)
         roi_imgs = []
         for circle in circles[0, :]:
@@ -257,9 +249,6 @@ class Detector:
             roi_imgs.append([roi, cropped_img])
 
         roi_imgs = [x for x in roi_imgs if len(x[0])]
-
-        # t2 = time.time()
-        # print(f"construct roi_imgs {t2-t1}")
 
         def get_center_from_ROI(roi_img):
             """Get center of the marker using Hough Transformation.
@@ -378,12 +367,9 @@ class Detector:
 
             return center_x, center_y
 
-        # t1 = time.time()
         results = []
         for roi_img in roi_imgs:
             results.append(get_center_from_ROI(roi_img))
-        # t2 = time.time()
-        # print(f"intersection point detection: {t2-t1}")
 
         for res in results:
             cv2.circle(
