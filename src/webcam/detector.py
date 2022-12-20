@@ -6,8 +6,8 @@ import cv2
 import numpy as np
 
 
-def get_ROI_coordinates(pt, sizeImg, sizeROI):
-    """Return ROI range based on the center point and size of ROI
+def get_ROI_coordinates(pt:tuple, sizeImg:tuple, sizeROI:tuple):
+    """Return ROI range based on the center point and size of ROI.
 
     Args:
         pt (tuple): center of ROI
@@ -41,8 +41,8 @@ def get_ROI_coordinates(pt, sizeImg, sizeROI):
 
     return roi.astype(np.int64)
 
-def coord_xform_img_to_roi(pt, roi):
-    """Coordinate Transformation form image frame to ROI frame
+def coord_xform_img_to_roi(pt:tuple, roi:tuple):
+    """Coordinate Transformation form image frame to ROI frame.
 
     Args:
         pt (tuple): point of interest
@@ -55,8 +55,8 @@ def coord_xform_img_to_roi(pt, roi):
     px, py = pt
     return (int(px - corner_x), int(py - corner_y))
 
-def coord_xform_roi_to_img(pt, roi):
-    """Coordinate Transformation form ROI frame to image frame
+def coord_xform_roi_to_img(pt:tuple, roi:tuple):
+    """Coordinate Transformation form ROI frame to image frame.
 
     Args:
         pt (tuple): point of interest
@@ -74,38 +74,71 @@ class Detector:
         # default parameters for Hough Transformations
         self.min = 10
         self.max = 20
-        self.param2 = 25
+        self.param2 = 25 
         self.min_dist = 10
         self.hough_line_threshold = 10
         self.circles = np.array([])
 
-    def read_file(self,file_name):
+    def read_file(self,file_name:str):
+        """Read image from a file.
+        
+        Args:
+            file_name (string): path to the file to be read.
+        """
         self.file = file_name
         self.img = cv2.imread(self.file)
         self.width = int(np.shape(self.img)[0] / 2)
         self.height = int(np.shape(self.img)[1] / 2)
         self.detected = False
     
-    def set_image(self, img):
+    def set_image(self, img:np.array):
+        """Set image to be detected
+        
+        Args:
+            img (array): image array
+        """
         self.img = img
         self.width = int(np.shape(self.img)[0] /2)
         self.height = int(np.shape(self.img)[1] /2)
         self.detected = False
     
-    def set_radii_range(self, min, max):
+    def set_radii_range(self, min:int, max:int):
+        """Set radius range of hough circle transformation.
+        
+        Args:
+            min (int): mininum radius to be detected, in pixel.
+            max (int): maximum radius to be detected, in pixel.
+        """
         self.min = min
         self.max = max
 
-    def set_param2_kpt(self, p):
+    def set_param2_kpt(self, p:float):
+        """Set parameter 2 for hough circle transformation.
+        
+        Args:
+            p (float):  param2 in hough circle transformation
+                        It is the accumulator threshold for the circle centers at the detection stage.
+                        The smaller it is, the more false circles may be detected.
+        """
         self.param2 = p
 
-    def set_min_dist(self, d):
+    def set_min_dist(self, d:float):
+        """Set minimum distance for hough circle transformation.
+        
+        Args:
+            d (float): minimum distance between the centers of the detected circles
+        """
         self.min_dist = d
 
-    def set_hough_line_threshold(self, th):
+    def set_hough_line_threshold(self, th:int):
+        """Set threshold for hough line transformation.
+        
+        Args:
+            th (int): Accumulator threshold parameter. Only those lines are returned that get enough votes 
+        """
         self.hough_line_threshold =th
 
-    def detect_kpt(self, num): 
+    def detect_kpt(self, num:int): 
         """ Detect markers using Hough Transformation
 
         Args:
@@ -162,7 +195,7 @@ class Detector:
             # t2 = time.time()
             # print(f"full circle:{t2-t1}")
         
-        # Convert the detection results to interger for plotting 
+        # Convert the detection results to interger array 
         try :   
             circles = np.uint16(np.around(self.circles))
         except TypeError:
@@ -199,7 +232,7 @@ class Detector:
                 Hough transformation will be performed on a ring-area in the ROI
 
             Args:
-                roi_img ([(x, y, w, h), cv2.Mat]): ROI and image list
+                roi_img ([(x, y, w, h), cv2.Mat]): ROI and corresponding image array
 
             Returns:
                 list: detected center of the markers
