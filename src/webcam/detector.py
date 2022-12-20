@@ -254,8 +254,7 @@ class Detector:
             cdst = cdst & outer_mask
 
             lines = cv2.HoughLines(cdst, rho = 1, theta = 1 * np.pi / 180, threshold = self.hough_line_threshold )
-            # lines = cv2.HoughLinesP(cdst, rho = 1, theta = 1 * np.pi / 180, threshold = 5, minLineLength = 3, maxLineGap=1)#, None, 0, 0)
-
+            # lines = cv2.HoughLinesP(cdst, rho = 1, theta = 1 * np.pi / 180, threshold = 5, minLineLength = 3, maxLineGap=1)
 
             # Find the point which has the closest to all the detected line
             # https://math.stackexchange.com/questions/36398/point-closest-to-a-set-four-of-lines-in-3d/55286#55286
@@ -264,23 +263,23 @@ class Detector:
 
             if lines is not None:
                 for line in lines:
-                    # HoughLines
+                    # get line parameters if HoughLines is used : 
+                    # line parameters : rho, theta (polar coordinates system)
                     rho = line[0][0]
                     theta = line[0][1]
                     a_line = math.cos(theta)
                     b_line = math.sin(theta)
                     x0 = a_line * rho
                     y0 = b_line * rho
-
                     pt1 = np.array([x0 + 10*(-b_line), y0 + 10*(a_line)] )
                     pt2 = np.array([x0 - 10*(-b_line), y0 - 10*(a_line)] )
-
                     # Draw the line on the image
                     # pt1_w = coord_xform_roi_to_img([pt1[0], pt1[1]], roi)
                     # pt2_w = coord_xform_roi_to_img([pt2[0], pt2[1]], roi)
                     # cv2.line(self.img, pt1_w, pt2_w, (0,255,0), 1, cv2.LINE_AA)
 
-                    # code for HoughLinesP
+                    # get line parameters if HoughLinesP is used :
+                    # line parameters : (x0, y0, x1, y1) coodinates of two points on the line
                     # x0, y0, x1, y1 = line[0]
                     # pt1 = np.array([x0, y0])
                     # pt2 = np.array([x1, y1])
@@ -289,7 +288,7 @@ class Detector:
                     # cv2.line(self.img, pt1_w, pt2_w, (0,255,0), 1, cv2.LINE_AA)
 
                     line_len = np.linalg.norm(pt2 - pt1)
-                    if line_len < 1e-3:
+                    if line_len < 1e-3: # make sure the line is valid
                         print(f"Line len: {line_len}\t pt1: {pt1}\t pt2: {pt2}")
                         print(f"Line: {line}")
                         continue
@@ -302,7 +301,11 @@ class Detector:
                     b += I_minus_uiuiT @ pt2
 
                 res = np.linalg.pinv(A) @ b 
-                if np.linalg.norm(res - center_approx) > 0.8*rad_approx:
+                # if the line intersection is too far from the center, 
+                # center of the detected circle will be used
+                # this usually means line on one direction is detected
+                # try tune the parameters, e.g. threshold in HoughLines
+                if np.linalg.norm(res - center_approx) > 0.8*rad_approx: 
                     center_x, center_y = coord_xform_roi_to_img(center_approx, roi)
                     # print("Estimated center is too far from center of the detected circle")
                 else:
