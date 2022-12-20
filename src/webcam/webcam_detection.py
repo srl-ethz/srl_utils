@@ -2,7 +2,6 @@ import time
 
 import cv2
 import numpy as np
-import rospy
 from detector import Detector
 from webcam_streamer import (disable_auto_focus, enable_auto_focus, set_focus,
                              webCamStreamer)
@@ -25,11 +24,12 @@ def main():
     num_marker = 10
     # wait one second for webcam to start
     time.sleep(1)
-
+    
+    # limit the excution speed as the max frame rate of webcam are 30 Hz
     # image_update_rate = rospy.Rate(30)
 
     try:
-        while not rospy.is_shutdown(): 
+        while True: 
             # t1 = time.time()
             image = streamer.get_frame()
             detector.set_image(image)
