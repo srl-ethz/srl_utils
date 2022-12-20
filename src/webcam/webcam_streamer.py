@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""WebCamStreamer Object, streaming images from an external webcam"""
+"""WebCamStreamer Object, streaming images from an external webcam."""
 import subprocess
 from threading import Event, Thread
 
@@ -33,32 +33,37 @@ from v4l2py import Device
 # to make sure focus remain constant
 # v4l-utils required: sudo apt install v4l-utils
 def disable_auto_focus(camera_id: int):
-    """Function to disable auto focus of the webcam.
+    """Disable auto focus of the webcam.
 
     Args:
         camera_id (int): camera id
     """
-    subprocess.call([f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_auto=0"], shell=True)
+    subprocess.call(
+        [f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_auto=0"], shell=True
+    )
 
 
 def enable_auto_focus(camera_id: int):
-    """Function to enable auto focus of the webcam.
+    """Enable auto focus of the webcam.
 
     Args:
         camera_id (int): camera id
     """
-    subprocess.call([f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_auto=1"], shell=True)
+    subprocess.call(
+        [f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_auto=1"], shell=True
+    )
 
 
 def set_focus(camera_id: int, focus: int):
-    """Function to set focus of the webcam.
+    """Set focus of the webcam.
 
     Args:
         camera_id (int): camera id
         focus (int): camera focus
     """
     subprocess.call(
-        [f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_absolute={focus}"], shell=True
+        [f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_absolute={focus}"],
+        shell=True,
     )
 
 
@@ -70,15 +75,15 @@ class webCamStreamer:
 
     """
 
-    def __init__(self, id: int) -> None:
-        """Initializer
+    def __init__(self, camera_id: int) -> None:
+        """Initialize private variable and start updating thread.
 
         Args:
             id (int): camera id. 0 if no other camera is available.
                       could be other value if there are integrated cameras
         """
-        self.id = id
-        self.cam = Device.from_id(self.id)
+        self.camera_id = camera_id
+        self.cam = Device.from_id(self.camera_id)
         # Set format of the streaming
         self.cam.video_capture.set_format(1920, 1080, "MJPG")
         # Start frame retrieval thread
@@ -89,28 +94,28 @@ class webCamStreamer:
         self.webcam_stop.clear()
         # start streaming
         self.thread.start()
-        
-        self.frame = []
+
+        self.frame = np.array([])
 
     def update(self):
-        """Function that runs on another thread to update most recent frame."""
+        """Update most recent frame, running on different thread."""
         while not self.webcam_stop.isSet():
             for index, frame_byte in enumerate(self.cam):
                 # JPEG signiture, for details, see https://en.wikipedia.org/wiki/JPEG_File_Interchange_Format
                 # ff d8: Start of Image
                 # ff d9: End of Image
-                a = frame_byte.find(b"\xff\xd8")
-                b = frame_byte.find(b"\xff\xd9")
-                if a != -1 and b != -1:
-                    jpg = frame_byte[a : b + 2]
-                    frame_byte = frame_byte[b + 2 :]
+                start_of_img = frame_byte.find(b"\xff\xd8")
+                end_of_img = frame_byte.find(b"\xff\xd9")
+                if start_of_img != -1 and end_of_img != -1:
+                    jpg = frame_byte[start_of_img : end_of_img + 2]
+                    frame_byte = frame_byte[end_of_img + 2 :]
                     # convert image string to cv2 datatype and save to the self.frame
                     self.frame = cv2.imdecode(
                         np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR
                     )
 
     def get_frame(self):
-        """Get most recent frame
+        """Get most recent frame.
 
         Returns:
             cv2.Mat: copy of most recent frame
@@ -118,5 +123,5 @@ class webCamStreamer:
         return self.frame.copy()
 
     def stop(self):
-        """set webcam_stop event and stop updating frames"""
+        """Set webcam_stop event and stop updating frames."""
         self.webcam_stop.set()

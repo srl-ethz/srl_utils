@@ -1,3 +1,4 @@
+"""A script to run the detection using a webcam."""
 import time
 
 import cv2
@@ -11,6 +12,7 @@ from webcam_streamer import (
 
 
 def main():
+    """Initialize webcam connection and detect markers on each frame."""
     camera_id = 4
     enable_auto_focus(camera_id)
     disable_auto_focus(camera_id)

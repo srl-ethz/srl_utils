@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""Detector class of the marker"""
+"""Detector class of the marker."""
 import math
 
 import cv2
@@ -7,6 +7,10 @@ import numpy as np
 
 
 def get_roi_coordinates(pt: tuple, size_img: tuple, size_roi: tuple):
+    # pylint: disable=invalid-name
+    # Justification:
+    # the variable names here are a proper representation
+    # for the region of interest
     """Return ROI range based on the center point and size of ROI.
 
     Args:
@@ -43,6 +47,10 @@ def get_roi_coordinates(pt: tuple, size_img: tuple, size_roi: tuple):
 
 
 def coord_xform_img_to_roi(pt: tuple, roi: tuple):
+    # pylint: disable=invalid-name
+    # Justification:
+    # the variable names here are a proper representation
+    # for the region of interest
     """Coordinate Transformation form image frame to ROI frame.
 
     Args:
@@ -58,6 +66,10 @@ def coord_xform_img_to_roi(pt: tuple, roi: tuple):
 
 
 def coord_xform_roi_to_img(pt: tuple, roi: tuple):
+    # pylint: disable=invalid-name
+    # Justification:
+    # the variable names here are a proper representation
+    # for the region of interest
     """Coordinate Transformation form ROI frame to image frame.
 
     Args:
@@ -73,18 +85,21 @@ def coord_xform_roi_to_img(pt: tuple, roi: tuple):
 
 
 class Detector:
+    """Detector class for detecting markers."""
+
     def __init__(self) -> None:
+        """Initialize private variables."""
         # default parameters for Hough Transformations
         self.min_r = 10
         self.max_r = 20
-        self.param2 = 25
-        self.min_dist = 10
+        self.param2 = 25.0
+        self.min_dist = 10.0
         self.hough_line_threshold = 10
         self.circles = np.array([])
 
         # initialize attribute
         self.file = ""
-        self.img = []
+        self.img = np.array([])
         self.width = 0
         self.height = 0
         self.detected = False
@@ -104,7 +119,7 @@ class Detector:
         self.detected = False
 
     def set_image(self, img: np.array):
-        """Set image to be detected
+        """Set image to be detected.
 
         Args:
             img (array): image array
@@ -146,12 +161,13 @@ class Detector:
         """Set threshold for hough line transformation.
 
         Args:
-            th (int): Accumulator threshold parameter. Only those lines are returned that get enough votes
+            th (int): Accumulator threshold parameter.
+                      Only those lines are returned that get enough votes
         """
         self.hough_line_threshold = th
 
     def detect_kpt(self, num: int):
-        """Detect markers using Hough Transformation
+        """Detect markers using Hough Transformation.
 
         Args:
             num (int): number of the markers desired
@@ -165,7 +181,8 @@ class Detector:
 
         # First step, HoughCircle Detection to find the location of the marker
 
-        # If there are detected circles saved previously, using previously detected circle to define a smaller ROI
+        # If there are detected circles saved previously,
+        # using previously detected circle to define a smaller ROI
         # Do the circle detection within the ROI to speed up detection
         # If there are no circles saved, do the circle detection on the full image
 
@@ -261,7 +278,12 @@ class Detector:
         roi_imgs = [x for x in roi_imgs if len(x[0])]
 
         def get_center_from_ROI(roi_img):
+            # pylint: disable=invalid-name
+            # Justification:
+            # the variable names here are a proper representation
+            # for the mathematical expressions
             """Get center of the marker using Hough Transformation.
+
                 Hough transformation will be performed on a ring-area in the ROI
 
             Args:
@@ -306,7 +328,14 @@ class Detector:
                 theta=1 * np.pi / 180,
                 threshold=self.hough_line_threshold,
             )
-            # lines = cv2.HoughLinesP(cdst, rho = 1, theta = 1 * np.pi / 180, threshold = 5, minLineLength = 3, maxLineGap=1)
+            # lines = cv2.HoughLinesP(
+            #     cdst,
+            #     rho=1,
+            #     theta=1 * np.pi / 180,
+            #     threshold=5,
+            #     minLineLength=3,
+            #     maxLineGap=1,
+            # )
 
             # Find the point which has the closest to all the detected line
             # https://math.stackexchange.com/questions/36398/point-closest-to-a-set-four-of-lines-in-3d/55286#55286
@@ -397,7 +426,7 @@ class Detector:
         return self.img, length
 
     def get_center_x_list(self):
-        """get x coordinates of the detected markers.
+        """Get x coordinates of the detected markers.
 
         Returns:
             list: x coordinates of the detected markers
@@ -405,7 +434,7 @@ class Detector:
         return self.center_x_list
 
     def get_center_y_list(self):
-        """get y coordinates of the detected markers.
+        """Get y coordinates of the detected markers.
 
         Returns:
             list: y coordinates of the detected markers
