@@ -1,6 +1,6 @@
-# Webcam Streamming and Keypoint detection
+# Webcam Streaming and Keypoint detection
 
-## Webcam streamming
+## Webcam streaming
 
 
 

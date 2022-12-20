@@ -17,7 +17,7 @@ def get_roi_coordinates(pt: tuple, size_img: tuple, size_roi: tuple):
     Returns:
         tuple(int, int, int, int): ROI coordinates, defined as (x, y, w, h)
         x: x coordinates of top left corner
-        y: y corrdinates of top left corner
+        y: y coordinates of top left corner
         w: width of the ROI
         h: height of the ROI
     """
@@ -90,7 +90,7 @@ class Detector:
         self.detected = False
         self.center_x_list = []
         self.center_y_list = []
-        
+
     def read_file(self, file_name: str):
         """Read image from a file.
 
@@ -118,7 +118,7 @@ class Detector:
         """Set radius range of hough circle transformation.
 
         Args:
-            min (int): mininum radius to be detected, in pixel.
+            min (int): minimum radius to be detected, in pixel.
             max (int): maximum radius to be detected, in pixel.
         """
         self.min_r = min_r
@@ -184,8 +184,8 @@ class Detector:
                     (region * r_list[i], region * r_list[i]),
                 )
                 local_gray_blured = gray_blured[
-                    int(roi[1]): int(roi[1] + roi[3]),
-                    int(roi[0]): int(roi[0] + roi[2]),
+                    int(roi[1]) : int(roi[1] + roi[3]),
+                    int(roi[0]) : int(roi[0] + roi[2]),
                 ]
                 local_circles = cv2.HoughCircles(
                     local_gray_blured,
@@ -228,7 +228,7 @@ class Detector:
             )
             self.circles = np.array(circles)
 
-        # Convert the detection results to interger array
+        # Convert the detection results to integer array
         try:
             circles = np.uint16(np.around(self.circles))
         except TypeError:
@@ -254,7 +254,7 @@ class Detector:
             )
             corner_x, corner_y, lh, lw = roi
             cropped_img = gray_blured[
-                corner_y: corner_y + lw, corner_x: corner_x + lh
+                corner_y : corner_y + lw, corner_x : corner_x + lh
             ]
             roi_imgs.append([roi, cropped_img])
 
@@ -331,7 +331,7 @@ class Detector:
                     # cv2.line(self.img, pt1_w, pt2_w, (0,255,0), 1, cv2.LINE_AA)
 
                     # get line parameters if HoughLinesP is used :
-                    # line parameters : (x0, y0, x1, y1) coodinates of two points on the line
+                    # line parameters : (x0, y0, x1, y1) coordinates of two points on the line
                     # x0, y0, x1, y1 = line[0]
                     # pt1 = np.array([x0, y0])
                     # pt2 = np.array([x1, y1])

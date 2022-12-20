@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""WebCamStreamer Object, streamming images from an external webcam"""
+"""WebCamStreamer Object, streaming images from an external webcam"""
 import subprocess
 from threading import Event, Thread
 
@@ -32,17 +32,33 @@ from v4l2py import Device
 # If camera intrinsic is to be used, disable auto focus and manually set a focus
 # to make sure focus remain constant
 # v4l-utils required: sudo apt install v4l-utils
-def disable_auto_focus(id: int):
-    subprocess.call([f"v4l2-ctl  -d {id} --set-ctrl=focus_auto=0"], shell=True)
+def disable_auto_focus(camera_id: int):
+    """Function to disable auto focus of the webcam.
+
+    Args:
+        camera_id (int): camera id
+    """
+    subprocess.call([f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_auto=0"], shell=True)
 
 
-def enable_auto_focus(id: int):
-    subprocess.call([f"v4l2-ctl  -d {id} --set-ctrl=focus_auto=1"], shell=True)
+def enable_auto_focus(camera_id: int):
+    """Function to enable auto focus of the webcam.
+
+    Args:
+        camera_id (int): camera id
+    """
+    subprocess.call([f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_auto=1"], shell=True)
 
 
-def set_focus(id: int, focus: int):
+def set_focus(camera_id: int, focus: int):
+    """Function to set focus of the webcam.
+
+    Args:
+        camera_id (int): camera id
+        focus (int): camera focus
+    """
     subprocess.call(
-        [f"v4l2-ctl  -d {id} --set-ctrl=focus_absolute={focus}"], shell=True
+        [f"v4l2-ctl  -d {camera_id} --set-ctrl=focus_absolute={focus}"], shell=True
     )
 
 
@@ -58,12 +74,12 @@ class webCamStreamer:
         """Initializer
 
         Args:
-            id (int): camera id. 0 if no other camera is avaiable.
+            id (int): camera id. 0 if no other camera is available.
                       could be other value if there are integrated cameras
         """
         self.id = id
         self.cam = Device.from_id(self.id)
-        # Set format of the streamming
+        # Set format of the streaming
         self.cam.video_capture.set_format(1920, 1080, "MJPG")
         # Start frame retrieval thread
         self.thread = Thread(target=self.update, args=())
@@ -71,8 +87,10 @@ class webCamStreamer:
         # Event to control the thread
         self.webcam_stop = Event()
         self.webcam_stop.clear()
-        # start streamming
+        # start streaming
         self.thread.start()
+        
+        self.frame = []
 
     def update(self):
         """Function that runs on another thread to update most recent frame."""
@@ -84,8 +102,8 @@ class webCamStreamer:
                 a = frame_byte.find(b"\xff\xd8")
                 b = frame_byte.find(b"\xff\xd9")
                 if a != -1 and b != -1:
-                    jpg = frame_byte[a: b + 2]
-                    frame_byte = frame_byte[b + 2:]
+                    jpg = frame_byte[a : b + 2]
+                    frame_byte = frame_byte[b + 2 :]
                     # convert image string to cv2 datatype and save to the self.frame
                     self.frame = cv2.imdecode(
                         np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR
