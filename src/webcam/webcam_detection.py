@@ -3,12 +3,8 @@ import time
 
 import cv2
 from detector import Detector
-from webcam_streamer import (
-    disable_auto_focus,
-    enable_auto_focus,
-    set_focus,
-    webCamStreamer,
-)
+from webcam_streamer import (disable_auto_focus, enable_auto_focus, set_focus,
+                             webCamStreamer)
 
 
 def main():
