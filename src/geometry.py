@@ -6,9 +6,9 @@ import numpy as np
 
 def camera_unproject_pixel_to_world(
     points2d: np.array,
-    Z: np.array,
-    camera_intrinsic: np.array,
-    distortion: np.array,
+    z_depth: np.array,
+    camera_intrinsic_matrix: np.array,
+    distortion_coefficients: np.array,
 ):  # pylint: disable=invalid-name
     # Justification:
     # the variable names here are a proper representation in mathematical expressions
@@ -19,33 +19,33 @@ def camera_unproject_pixel_to_world(
 
     Args:
         points2d (array(N*2)): array of 2d points in pixel coordinates
-        Z (float): known depth of the object plane
-        camera_intrinsic (array(3*3)): camera intrinsic matrix
-        distortion (array): distortion coefficients
+        Z (array(1,) or array(N,)): known depth of the object plane
+        camera_intrinsic_matrix (array(3*3)): camera intrinsic matrix
+        distortion (array(5,)): distortion coefficients
     Returns:
         array(N*3): array of 3d points in camera frame
     """
     # f_x,  f_y: the pixel focal length
     # c_x,  c_y: offsets of the principal point from the top-left corner of the image frame
-    f_x = camera_intrinsic[0, 0]
-    f_y = camera_intrinsic[1, 1]
-    c_x = camera_intrinsic[0, 2]
-    c_y = camera_intrinsic[1, 2]
+    f_x = camera_intrinsic_matrix[0, 0]
+    f_y = camera_intrinsic_matrix[1, 1]
+    c_x = camera_intrinsic_matrix[0, 2]
+    c_y = camera_intrinsic_matrix[1, 2]
     # Step 1. Undistort.
     points_undistorted = np.array([])
     if len(points2d) > 0:
         points_undistorted = cv2.undistortPoints(
             np.expand_dims(points2d, axis=1).astype(np.float64),
-            camera_intrinsic,
-            distortion,
-            P=camera_intrinsic,
+            camera_intrinsic_matrix,
+            distortion_coefficients,
+            P=camera_intrinsic_matrix,
         )
     points_undistorted = np.squeeze(points_undistorted, axis=1)
 
     # Step 2. Reproject.
     result = np.array([])
     for idx in range(points_undistorted.shape[0]):
-        z = Z[0] if len(Z) == 1 else Z[idx]
+        z = z_depth[0] if len(z_depth) == 1 else z_depth[idx]
         x = (points_undistorted[idx, 0] - c_x) / f_x * z
         y = (points_undistorted[idx, 1] - c_y) / f_y * z
         result = np.append(result, [x, y, z])
@@ -60,7 +60,7 @@ def camera_project_3d_to_pixel(point_3d: np.array, intrinsics: np.array):
         intrinsics (array(3*3)): Camera intrinsic matrix
 
     Returns:
-        array(N*2): array of 2d
+        array(N*2): array of 2d pixel coordinates
     """
     point_2d = intrinsics @ point_3d
     point_2d /= point_2d[2]
@@ -96,7 +96,7 @@ def project_points_to_plane(
                         where surface equation is a*x + b*y + c*z + d = 0
 
     Returns:
-        array(N*3): 3d coordinates of the projected point on surface S
+        array(N*3): 3d coordinates of the projected points on surface S
     """
     result = np.array([])
     x0, y0, z0 = center
@@ -114,9 +114,12 @@ def project_points_to_plane(
 
 
 # https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python
-def unit_vector(vector: np.array):
+def normalize(vector: np.array):
     """Return the unit vector of the vector."""
-    return vector / np.linalg.norm(vector)
+    norm=np.linalg.norm(vector)
+    if norm==0:  # use eps to avoid zero division
+        norm=np.finfo(vector.dtype).eps
+    return vector / norm
 
 
 def angle_between(vector1: np.array, vector2: np.array):
@@ -136,8 +139,8 @@ def angle_between(vector1: np.array, vector2: np.array):
     Returns:
         float: angle between two vectors in radians
     """
-    vector1_u = unit_vector(vector1)
-    vector2_u = unit_vector(vector2)
+    vector1_u = normalize(vector1)
+    vector2_u = normalize(vector2)
     return np.arccos(np.clip(np.dot(vector1_u, vector2_u), -1.0, 1.0))
 
 
