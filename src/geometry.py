@@ -1,5 +1,7 @@
 """Utilities that involves geometry calculation."""
 
+import warnings
+
 import cv2
 import numpy as np
 
@@ -92,7 +94,7 @@ def project_points_to_plane(
     Args:
         points3d (array(N*3)): 3d coordinates of the point to project
         center (array(1*3)): optical center of the pinhole projection model
-        S (array(4,1)): surface to be projected [a,b,c,d],
+        S (array(4,1)): surface on which to project [a,b,c,d],
                         where surface equation is a*x + b*y + c*z + d = 0
 
     Returns:
@@ -118,7 +120,8 @@ def normalize(vector: np.array):
     """Return the unit vector of the vector."""
     norm=np.linalg.norm(vector)
     if norm==0:  # use eps to avoid zero division
-        norm=np.finfo(vector.dtype).eps
+        norm=np.finfo(np.float).eps
+        warnings.warn("Zero vector cannot be normalized")
     return vector / norm
 
 
