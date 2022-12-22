@@ -118,9 +118,9 @@ def project_points_to_plane(
 # https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python
 def normalize(vector: np.array):
     """Return the unit vector of the vector."""
-    norm=np.linalg.norm(vector)
-    if norm==0:  # use eps to avoid zero division
-        norm=np.finfo(np.float).eps
+    norm = np.linalg.norm(vector)
+    if norm == 0:  # use eps to avoid zero division
+        norm = np.finfo(np.float).eps
         warnings.warn("Zero vector cannot be normalized")
     return vector / norm
 
