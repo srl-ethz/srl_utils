@@ -27,9 +27,7 @@ import numpy as np
     help="Video filepath. Output files will also be stored in its folder.",
     required=True,
 )
-@click.option(
-    "--num_boxes", "-n", default=2, help="Number of bounding boxes."
-)
+@click.option("--num_boxes", "-n", default=2, help="Number of bounding boxes.")
 @click.option(
     "--start_frame", "-s", default=0, help="Relevant starting frame of video."
 )
@@ -122,7 +120,9 @@ def track_markers(
         for box in bboxes_new:
             topleft = (int(box[0]), int(box[1]))
             botright = (int(box[0] + box[2]), int(box[1] + box[3]))
-            cv2.rectangle(frame, topleft, botright, color=(0, 0, 255), thickness=2)
+            cv2.rectangle(
+                frame, topleft, botright, color=(0, 0, 255), thickness=2
+            )
 
         curr_markers = []
         # Compute relevant values of motion marker positions
