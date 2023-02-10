@@ -1,0 +1,16 @@
+name: Greetings
+
+on: [pull_request_target, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: "Thank you for creating your first issue! This helps us keep track of bugs to fix and feature requests to add :)"
+        pr-message: "Thank you so much for deciding to contribute to `srl_utils`! Since this is your first PR, it might take a bit of time to make it through the review process, but it's going to get a lot easier after that :)"
