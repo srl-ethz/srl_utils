@@ -1,0 +1,11 @@
+<launch>
+    <rosparam command="load" file="$(find ft_sensor)/config/params.yaml" />
+
+    <node name="serial_reading_node" pkg="ft_sensor" type="read_serial.py" output="screen"/>
+
+    <node name="readLabjack" pkg="ft_sensor" type="readLabjack" output="screen"/>
+
+    <node name="ftConverter" pkg="ft_sensor" type="ftConverter" output="screen"/> 
+
+</launch>
+    

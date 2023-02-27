@@ -1,0 +1,2 @@
+/ft_sensor/port: /dev/ttyACM0
+/ft_sensor/baudrate: 500000
