@@ -94,15 +94,15 @@ def read_serial_node(serial_port, serial_baudrate):
 if __name__ == "__main__":
     try:
         if rospy.has_param("/ft_sensor/port"):
-            port = rospy.get_param("/ft_sensor/port")
+            param_port = rospy.get_param("/ft_sensor/port")
         else:
             rospy.logerr("Please set port in launch file")
         if rospy.has_param("/ft_sensor/baudrate"):
-            baudrate = rospy.get_param("/ft_sensor/baudrate")
+            param_baudrate = rospy.get_param("/ft_sensor/baudrate")
         else:
             rospy.logerr("Please set baudrate in launch file")
 
-        read_serial_node(port, baudrate)
+        read_serial_node(param_port, param_baudrate)
 
     except rospy.ROSInterruptException:
         rospy.logerr("ROS Interrupt Exceptions")
