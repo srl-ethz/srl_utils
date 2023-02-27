@@ -29,11 +29,11 @@ First, connect FT sensor to Labjack U3 and ADCs according to the color map and c
 | SG5    | grey   | U3-AIN3  |
 
 Then, connect Labjack U3 and arduino to the computer.
-To run the node, configure the serial port in `config/param.yaml`, then run 
+In order to run the node, configure the serial port in `config/param.yaml` and run 
 ```
     roslaunch ft_sensor ft_sensor_node.launch
 ```
-or include `ft_sensor_node.launch` in other launch files.
+in the command line or include `ft_sensor_node.launch` in other launch files.
 
 # ROS Nodes
 ## Nodes
