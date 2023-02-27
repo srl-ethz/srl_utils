@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 """
-ROS Node to process serial input and publish corresponding messages
-  (2 ADC voltage readings)
+ROS Node to process serial input and publish corresponding messages.
 
+  2 ADC voltage readings
   Author :  Sizhe Tian (sitian@student.ethz.ch)
   Nov 2022
 
@@ -17,7 +17,8 @@ from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 
 
 def read_serial_node(serial_port, serial_baudrate):
-    """Read serial port and publish data from it
+    r"""Read serial port and publish data from it.
+
     Serial output format:
     "[Xf.f,f.f, ...]"
         - Start with '['
@@ -28,7 +29,6 @@ def read_serial_node(serial_port, serial_baudrate):
         port (string): serial port name
         baudrate (int): baudrate for serial port
     """
-
     rospy.init_node("serial_reading_node", anonymous=True)
 
     ser_lock = Lock()

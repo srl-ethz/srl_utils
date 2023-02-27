@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   u3Streamer u3;
 
   if (!u3.isInit()) {
-    ROS_ERROR("U3 initialzation unsuccessful");
+    ROS_ERROR("U3 initialization unsuccessful");
     return -1;
   }
 

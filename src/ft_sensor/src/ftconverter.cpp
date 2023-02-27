@@ -44,7 +44,7 @@ FTConverter::FTConverter(char *calfilepath) {
     return;
   }
 
-  // No tranformation will be applied
+  // No transformation will be applied
   transformation_ = std::array<float, 6>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   // Set force units.

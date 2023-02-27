@@ -80,7 +80,7 @@ class FTConverter {
   bool biasInit_ = false;
 
   std::array<float, 6> voltages_{
-      0, 0, 0, 0, 0, 0};  // array to store raw voltage measurments
+      0, 0, 0, 0, 0, 0};  // array to store raw voltage measurements
   std::array<float, 6> bias_{0, 0, 0, 0, 0, 0};  // array to store bias
   std::array<float, 6> transformation_{
       0, 0, 0, 0,
