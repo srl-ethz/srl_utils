@@ -54,7 +54,7 @@ class FTConverter {
    * @brief using most recent voltage results to calculate force/torque
    * measurement and saved in measurement
    * @param  {std::array<float, 6> &} measurement:
-   * 
+   *
    */
   void getMeasurement(std::array<float, 6> &measurement);
 

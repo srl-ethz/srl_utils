@@ -2,17 +2,17 @@
 Copyright (c) 1998, 1999 Thai Open Source Software Center Ltd
  *
  * The MIT License
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -645,7 +645,7 @@ int little2_isNmstrtMin(const ENCODING *enc, const char *p)
 #define MINBPC(enc) 2
 /* CHAR_MATCHES is guaranteed to have MINBPC bytes available. */
 #define BYTE_TYPE(enc, p) LITTLE2_BYTE_TYPE(enc, p)
-#define BYTE_TO_ASCII(enc, p) LITTLE2_BYTE_TO_ASCII(enc, p) 
+#define BYTE_TO_ASCII(enc, p) LITTLE2_BYTE_TO_ASCII(enc, p)
 #define CHAR_MATCHES(enc, p, c) LITTLE2_CHAR_MATCHES(enc, p, c)
 #define IS_NAME_CHAR(enc, p, n) 0
 #define IS_NAME_CHAR_MINBPC(enc, p) LITTLE2_IS_NAME_CHAR_MINBPC(enc, p)
@@ -668,7 +668,7 @@ int little2_isNmstrtMin(const ENCODING *enc, const char *p)
 
 #ifdef XML_NS
 
-static const struct normal_encoding little2_encoding_ns = { 
+static const struct normal_encoding little2_encoding_ns = {
   { VTABLE, 2, 0,
 #if XML_BYTE_ORDER == 12
     1
@@ -685,7 +685,7 @@ static const struct normal_encoding little2_encoding_ns = {
 
 #endif
 
-static const struct normal_encoding little2_encoding = { 
+static const struct normal_encoding little2_encoding = {
   { VTABLE, 2, 0,
 #if XML_BYTE_ORDER == 12
     1
@@ -706,7 +706,7 @@ static const struct normal_encoding little2_encoding = {
 
 #ifdef XML_NS
 
-static const struct normal_encoding internal_little2_encoding_ns = { 
+static const struct normal_encoding internal_little2_encoding_ns = {
   { VTABLE, 2, 0, 1 },
   {
 #include "iasciitab.h"
@@ -717,7 +717,7 @@ static const struct normal_encoding internal_little2_encoding_ns = {
 
 #endif
 
-static const struct normal_encoding internal_little2_encoding = { 
+static const struct normal_encoding internal_little2_encoding = {
   { VTABLE, 2, 0, 1 },
   {
 #define BT_COLON BT_NMSTRT
@@ -784,7 +784,7 @@ int big2_isNmstrtMin(const ENCODING *enc, const char *p)
 #define MINBPC(enc) 2
 /* CHAR_MATCHES is guaranteed to have MINBPC bytes available. */
 #define BYTE_TYPE(enc, p) BIG2_BYTE_TYPE(enc, p)
-#define BYTE_TO_ASCII(enc, p) BIG2_BYTE_TO_ASCII(enc, p) 
+#define BYTE_TO_ASCII(enc, p) BIG2_BYTE_TO_ASCII(enc, p)
 #define CHAR_MATCHES(enc, p, c) BIG2_CHAR_MATCHES(enc, p, c)
 #define IS_NAME_CHAR(enc, p, n) 0
 #define IS_NAME_CHAR_MINBPC(enc, p) BIG2_IS_NAME_CHAR_MINBPC(enc, p)
@@ -915,7 +915,7 @@ int isSpace(int c)
   case 0x20:
   case 0xD:
   case 0xA:
-  case 0x9:	
+  case 0x9:
     return 1;
   }
   return 0;

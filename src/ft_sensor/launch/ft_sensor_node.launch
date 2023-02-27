@@ -5,7 +5,6 @@
 
     <node name="readLabjack" pkg="ft_sensor" type="readLabjack" output="screen"/>
 
-    <node name="ftConverter" pkg="ft_sensor" type="ftConverter" output="screen"/> 
+    <node name="ftConverter" pkg="ft_sensor" type="ftConverter" output="screen"/>
 
 </launch>
-    

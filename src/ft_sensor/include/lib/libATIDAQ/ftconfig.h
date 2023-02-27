@@ -3,17 +3,17 @@
  * Copyright (c) 2001 ATI Industrial Automation
  *
  * The MIT License
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -81,12 +81,12 @@ Calibration *createCalibration(char *CalFilePath, unsigned short index);
 //   index: the number of the calibration within the file (usually 1)
 // Return Values:
 //   NULL: Could not load the desired calibration.
-// Notes: For each Calibration object initialized by this function, 
+// Notes: For each Calibration object initialized by this function,
 //        destroyCalibration must be called for cleanup.
 
 void destroyCalibration(Calibration *cal);
 // Frees memory allocated for Calibration struct by a successful
-// call to createCalibration.  Must be called when Calibration 
+// call to createCalibration.  Must be called when Calibration
 // struct is no longer needed.
 // Parameters:
 //   cal: initialized Calibration struct

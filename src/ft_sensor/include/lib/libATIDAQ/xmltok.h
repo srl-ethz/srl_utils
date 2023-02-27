@@ -2,17 +2,17 @@
 Copyright (c) 1998, 1999 Thai Open Source Software Center Ltd
  *
  * The MIT License
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -39,7 +39,7 @@ extern "C" {
 /* The following tokens may be returned by both XmlPrologTok and XmlContentTok */
 #define XML_TOK_NONE -4    /* The string to be scanned is empty */
 #define XML_TOK_TRAILING_CR -3 /* A CR at the end of the scan;
-                                  might be part of CRLF sequence */ 
+                                  might be part of CRLF sequence */
 #define XML_TOK_PARTIAL_CHAR -2 /* only part of a multibyte sequence */
 #define XML_TOK_PARTIAL -1 /* only part of a token */
 #define XML_TOK_INVALID 0
@@ -225,7 +225,7 @@ literals, comments and processing instructions.
 #endif /* XML_DTD */
 
 /* This is used for performing a 2nd-level tokenization on
-the content of a literal that has already been returned by XmlTok. */ 
+the content of a literal that has already been returned by XmlTok. */
 
 #define XmlLiteralTok(enc, literalType, ptr, end, nextTokPtr) \
   (((enc)->literalScanners[literalType])(enc, ptr, end, nextTokPtr))

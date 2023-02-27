@@ -12,7 +12,7 @@ xmlparse.c
 xmlrole.c
 xmltok.c)
 
-add_library(ATIDAQ ${HEADER_FILES} ${C_FILES}) 
+add_library(ATIDAQ ${HEADER_FILES} ${C_FILES})
 
 
 # message(STATUS "HEADER_FILES : ${HEADER_FILES}")
