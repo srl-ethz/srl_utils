@@ -1,8 +1,7 @@
 # ROS Node for FT Sensor
 A ROS node to read ATI FT Sensor Nano17 using Labjack U3 along with two ADCs.
 
-Labjack U3 provides only 4 ADCs that meet the requirement of Nano17 output (-10V ~ 10V), therefore
-two additional ADCs is added to get the complete readings. ADCs are read using arduino.
+ATI FT sensor Nano 17 is 6-axis force torque sensor. It output 6 voltage signals. But Labjack U3 provides only 4 ADCs that meet the requirement of Nano17 output (-10V ~ 10V). Therefore, two additional ADCs is added to get the complete readings. ADCs are read using arduino.
 
 
 # Prerequisite
@@ -34,7 +33,7 @@ To run the node, configure the serial port in `config/param.yaml`, then run
 ```
     roslaunch ft_sensor ft_sensor_node.launch
 ```
-or include `ft_sensor_node.launch` in other launch file
+or include `ft_sensor_node.launch` in other launch files.
 
 # ROS Nodes
 ## Nodes
