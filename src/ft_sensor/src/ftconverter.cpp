@@ -49,7 +49,7 @@ FTConverter::FTConverter(char *calfilepath) {
   // Set force units.
   // This step is optional; by default, the units are inherited from the
   // calibration file.
-  sts_ = SetForceUnits(cal_, static_cast<char *>("N"));
+  sts_ = SetForceUnits(cal_, (char *)"N");
   switch (sts_) {
     case 0:
       break;  // successful completion
@@ -67,7 +67,7 @@ FTConverter::FTConverter(char *calfilepath) {
   // Set torque units.
   // This step is optional; by default, the units are inherited from the
   // calibration file.
-  sts_ = SetTorqueUnits(cal_, static_cast<char *>("N-m"));
+  sts_ = SetTorqueUnits(cal_, (char *)"N-m");
   switch (sts_) {
     case 0:
       break;  // successful completion
@@ -87,8 +87,8 @@ FTConverter::FTConverter(char *calfilepath) {
   // coordinate system. This example tool transform translates the coordinate
   // system 20 mm along the Z-axis and rotates it 45 degrees about the X-axis.
   sts_ =
-      SetToolTransform(cal_, transformation_.data(), static_cast<char *>("mm"),
-                       static_cast<char *>("degrees"));
+      SetToolTransform(cal_, transformation_.data(), (char *)"mm",
+                       (char *)"degrees");
   switch (sts_) {
     case 0:
       break;  // successful completion
