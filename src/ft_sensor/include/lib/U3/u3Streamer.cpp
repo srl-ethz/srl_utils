@@ -8,6 +8,7 @@
 // Requires a U3 with hardware version 1.21 or higher.
 
 #include "u3Streamer.h"
+
 #include <iostream>
 
 u3Streamer::u3Streamer() {
@@ -150,10 +151,10 @@ int u3Streamer::StreamConfig(HANDLE hDevice) {
 
   sendBuffSize = 12 + num_channels_ * 2;
 
-  sendBuff[1] = (uint8)(0xF8);        // Command byte
-  sendBuff[2] = 3 + num_channels_;    // Number of data words = num_channels_ + 3
-  sendBuff[3] = (uint8)(0x11);        // Extended command number
-  sendBuff[6] = num_channels_;        // num_channels_
+  sendBuff[1] = (uint8)(0xF8);      // Command byte
+  sendBuff[2] = 3 + num_channels_;  // Number of data words = num_channels_ + 3
+  sendBuff[3] = (uint8)(0x11);      // Extended command number
+  sendBuff[6] = num_channels_;      // num_channels_
   sendBuff[7] = samples_per_packet_;  // samples_per_packet_
   sendBuff[8] = 0;                    // Reserved
   sendBuff[9] = 1;                    // ScanConfig:
@@ -184,8 +185,7 @@ int u3Streamer::StreamConfig(HANDLE hDevice) {
     return -1;
   }
 
-  for (i = 0; i < 8; i++)
-    recBuff[i] = 0;
+  for (i = 0; i < 8; i++) recBuff[i] = 0;
 
   // Reading response from U3
   recChars = LJUSB_Read(hDevice, recBuff, 8);
@@ -196,8 +196,7 @@ int u3Streamer::StreamConfig(HANDLE hDevice) {
       printf("Error : did not read all of the buffer, %d (StreamConfig).\n",
              recChars);
 
-    for (i = 0; i < 8; i++)
-      printf("%d ", recBuff[i]);
+    for (i = 0; i < 8; i++) printf("%d ", recBuff[i]);
 
     return -1;
   }
@@ -328,9 +327,10 @@ int u3Streamer::getStreamData(std::array<double, NumChannels> &voltages) {
       if (recChars == 0)
         printf("Error : read failed (getStreamData).\n");
       else
-        printf("Error : did not read all of the buffer, expected %d bytes but "
-               "received %d(StreamData).\n",
-               responseSize * readSizeMultiplier, recChars);
+        printf(
+            "Error : did not read all of the buffer, expected %d bytes but "
+            "received %d(StreamData).\n",
+            responseSize * readSizeMultiplier, recChars);
       return -1;
     }
 
@@ -363,15 +363,17 @@ int u3Streamer::getStreamData(std::array<double, NumChannels> &voltages) {
 
     if (recBuff[11] == 59) {
       if (!autoRecoveryOn) {
-        printf("\nU3a data buffer overflow detected in packet %d.\nNow using "
-               "auto-recovery and reading buffered samples.\n",
-               totalPackets);
+        printf(
+            "\nU3a data buffer overflow detected in packet %d.\nNow using "
+            "auto-recovery and reading buffered samples.\n",
+            totalPackets);
         autoRecoveryOn = 1;
       }
     } else if (recBuff[11] == 60) {
-      printf("Auto-recovery report in packet %d: %d scans were "
-             "dropped.\nAuto-recovery is now off.\n",
-             totalPackets, recBuff[6] + recBuff[7] * 256);
+      printf(
+          "Auto-recovery report in packet %d: %d scans were "
+          "dropped.\nAuto-recovery is now off.\n",
+          totalPackets, recBuff[6] + recBuff[7] * 256);
       autoRecoveryOn = 0;
     } else if (recBuff[11] != 0) {
       printf("Errorcode # %d from StreamData read.\n",
@@ -380,9 +382,10 @@ int u3Streamer::getStreamData(std::array<double, NumChannels> &voltages) {
     }
 
     if (packet_counter_ != (int)recBuff[10]) {
-      printf("PacketCounter (%d) does not match with with current packet count "
-             "(%d)(getStreamData).\n",
-             recBuff[10], packet_counter_);
+      printf(
+          "PacketCounter (%d) does not match with with current packet count "
+          "(%d)(getStreamData).\n",
+          recBuff[10], packet_counter_);
       return -1;
     }
 
@@ -479,9 +482,10 @@ int u3Streamer::StreamData(HANDLE hDevice, u3CalibrationInfo *caliInfo,
         if (recChars == 0)
           printf("Error : read failed (StreamData).\n");
         else
-          printf("Error : did not read all of the buffer, expected %d bytes "
-                 "but received %d(StreamData).\n",
-                 responseSize * readSizeMultiplier, recChars);
+          printf(
+              "Error : did not read all of the buffer, expected %d bytes "
+              "but received %d(StreamData).\n",
+              responseSize * readSizeMultiplier, recChars);
         return -1;
       }
 
@@ -518,17 +522,19 @@ int u3Streamer::StreamData(HANDLE hDevice, u3CalibrationInfo *caliInfo,
 
         if (recBuff[m * recBuffSize + 11] == 59) {
           if (!autoRecoveryOn) {
-            printf("\nU3b data buffer overflow detected in packet %d.\nNow "
-                   "using auto-recovery and reading buffered samples.\n",
-                   totalPackets);
+            printf(
+                "\nU3b data buffer overflow detected in packet %d.\nNow "
+                "using auto-recovery and reading buffered samples.\n",
+                totalPackets);
             autoRecoveryOn = 1;
           }
         } else if (recBuff[m * recBuffSize + 11] == 60) {
-          printf("Auto-recovery report in packet %d: %d scans were "
-                 "dropped.\nAuto-recovery is now off.\n",
-                 totalPackets,
-                 recBuff[m * recBuffSize + 6] +
-                     recBuff[m * recBuffSize + 7] * 256);
+          printf(
+              "Auto-recovery report in packet %d: %d scans were "
+              "dropped.\nAuto-recovery is now off.\n",
+              totalPackets,
+              recBuff[m * recBuffSize + 6] +
+                  recBuff[m * recBuffSize + 7] * 256);
           autoRecoveryOn = 0;
         } else if (recBuff[m * recBuffSize + 11] != 0) {
           printf("Errorcode # %d from StreamData read.\n",
@@ -537,9 +543,10 @@ int u3Streamer::StreamData(HANDLE hDevice, u3CalibrationInfo *caliInfo,
         }
 
         if (packet_counter_ != (int)recBuff[m * recBuffSize + 10]) {
-          printf("PacketCounter (%d) does not match with with current packet "
-                 "count (%d)(StreamData).\n",
-                 recBuff[m * recBuffSize + 10], packet_counter_);
+          printf(
+              "PacketCounter (%d) does not match with with current packet "
+              "count (%d)(StreamData).\n",
+              recBuff[m * recBuffSize + 10], packet_counter_);
           return -1;
         }
 

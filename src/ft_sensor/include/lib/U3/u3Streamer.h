@@ -11,6 +11,7 @@
 #define U3STREAMER_H
 
 #include <array>
+
 #include "u3.h"
 
 static const uint8 NumChannels = 4;
