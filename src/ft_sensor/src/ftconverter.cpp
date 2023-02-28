@@ -31,7 +31,7 @@
  performing force/torque calculations
 */
 
-#include "ftconverter.h"
+#include "include/ftconverter.h"
 
 #include <ros/console.h>
 #include <ros/package.h>
@@ -51,7 +51,7 @@ FTConverter::FTConverter(char *calfilepath) {
   // Set force units.
   // This step is optional; by default, the units are inherited from the
   // calibration file.
-  sts_ = SetForceUnits(cal_, "N");
+  sts_ = SetForceUnits(cal_, (char *) "N");
   switch (sts_) {
     case 0:
       break;  // successful completion
@@ -69,7 +69,7 @@ FTConverter::FTConverter(char *calfilepath) {
   // Set torque units.
   // This step is optional; by default, the units are inherited from the
   // calibration file.
-  sts_ = SetTorqueUnits(cal_, "N-m");
+  sts_ = SetTorqueUnits(cal_, (char *) "N-m");
   switch (sts_) {
     case 0:
       break;  // successful completion
@@ -88,7 +88,7 @@ FTConverter::FTConverter(char *calfilepath) {
   // This line is only required if you want to move or rotate the sensor's
   // coordinate system. This example tool transform translates the coordinate
   // system 20 mm along the Z-axis and rotates it 45 degrees about the X-axis.
-  sts_ = SetToolTransform(cal_, transformation_.data(), "mm", "degrees");
+  sts_ = SetToolTransform(cal_, transformation_.data(), (char *) "mm", (char *) "degrees");
   switch (sts_) {
     case 0:
       break;  // successful completion
