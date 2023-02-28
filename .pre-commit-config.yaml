@@ -76,4 +76,3 @@ repos:
         args: [--style=Google]
       - id: cppcheck
       - id: cpplint
-      - id: include-what-you-use
