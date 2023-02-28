@@ -8,7 +8,6 @@ ROS Node to process serial input and publish corresponding messages.
 
 """
 
-from curses import baudrate
 from threading import Lock
 
 import rospy

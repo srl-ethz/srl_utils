@@ -1,8 +1,8 @@
 // Copyright 2022 Sizhe Tian, Soft Robotic Lab, ETH
 
 #include "U3/u3Streamer.h"
-#include "ros/ros.h"
 #include "ros/console.h"
+#include "ros/ros.h"
 #include "std_msgs/Float32MultiArray.h"
 
 int main(int argc, char **argv) {
@@ -10,7 +10,8 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
 
-  ros::Publisher u3_pub = n.advertise<std_msgs::Float32MultiArray >("/force_torque_sensor_raw/u3", 1000);
+  ros::Publisher u3_pub = n.advertise<std_msgs::Float32MultiArray>(
+      "/force_torque_sensor_raw/u3", 1000);
 
   u3Streamer u3;
 

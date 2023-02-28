@@ -32,6 +32,7 @@
 */
 
 #include "ftconverter.h"
+
 #include <ros/console.h>
 #include <ros/package.h>
 #include <stdio.h>
@@ -52,17 +53,17 @@ FTConverter::FTConverter(char *calfilepath) {
   // calibration file.
   sts_ = SetForceUnits(cal_, "N");
   switch (sts_) {
-  case 0:
-    break;  // successful completion
-  case 1:
-    ROS_ERROR("Invalid Calibration struct");
-    return;
-  case 2:
-    ROS_ERROR("Invalid force units");
-    return;
-  default:
-    ROS_ERROR("Unknown error");
-    return;
+    case 0:
+      break;  // successful completion
+    case 1:
+      ROS_ERROR("Invalid Calibration struct");
+      return;
+    case 2:
+      ROS_ERROR("Invalid force units");
+      return;
+    default:
+      ROS_ERROR("Unknown error");
+      return;
   }
 
   // Set torque units.
@@ -70,17 +71,17 @@ FTConverter::FTConverter(char *calfilepath) {
   // calibration file.
   sts_ = SetTorqueUnits(cal_, "N-m");
   switch (sts_) {
-  case 0:
-    break;  // successful completion
-  case 1:
-    ROS_ERROR("Invalid Calibration struct");
-    return;
-  case 2:
-    ROS_ERROR("Invalid torque units");
-    return;
-  default:
-    ROS_ERROR("Unknown error");
-    return;
+    case 0:
+      break;  // successful completion
+    case 1:
+      ROS_ERROR("Invalid Calibration struct");
+      return;
+    case 2:
+      ROS_ERROR("Invalid torque units");
+      return;
+    default:
+      ROS_ERROR("Unknown error");
+      return;
   }
 
   // Set tool transform.
@@ -89,20 +90,20 @@ FTConverter::FTConverter(char *calfilepath) {
   // system 20 mm along the Z-axis and rotates it 45 degrees about the X-axis.
   sts_ = SetToolTransform(cal_, transformation_.data(), "mm", "degrees");
   switch (sts_) {
-  case 0:
-    break;  // successful completion
-  case 1:
-    ROS_ERROR("Invalid Calibration struct");
-    return;
-  case 2:
-    ROS_ERROR("Invalid distance units");
-    return;
-  case 3:
-    ROS_ERROR("Invalid angle units");
-    return;
-  default:
-    ROS_ERROR("Unknown error");
-    return;
+    case 0:
+      break;  // successful completion
+    case 1:
+      ROS_ERROR("Invalid Calibration struct");
+      return;
+    case 2:
+      ROS_ERROR("Invalid distance units");
+      return;
+    case 3:
+      ROS_ERROR("Invalid angle units");
+      return;
+    default:
+      ROS_ERROR("Unknown error");
+      return;
   }
 
   ros::NodeHandle nh;
