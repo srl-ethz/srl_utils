@@ -34,17 +34,17 @@
 #ifndef FTCONVERTER_H
 #define FTCONVERTER_H
 
-#include "ftconfig.h"
+#include <array>
+#include <mutex>
+
+#include "lib/libATIDAQ/ftconfig.h"
 #include "ros/ros.h"
 #include "std_msgs/Float32MultiArray.h"
-#include <stdio.h>
-#include <string>
 
 class FTConverter {
-public:
+ public:
   explicit FTConverter(char *calfilepath);
   ~FTConverter();
-
   /**
    * @brief initialize bias using current voltage reading
    *
@@ -56,15 +56,13 @@ public:
    * @param  {std::array<float, 6> &} measurement:
    *
    */
-  void getMeasurement(std::array<float, 6> &measurement);
-
+  void getMeasurement(std::array<float, 6> *measurement);
   /**
    * @brief Callback function for the message from labjack u3
    *    check message data dimension and saved it in voltage_
    * @param  {std_msgs::Float32MultiArray} msg :
    */
   void u3Callback(std_msgs::Float32MultiArray msg);
-
   /**
    * @brief Callback function for the message from adc
    *    check message data dimension and data input range
@@ -73,20 +71,20 @@ public:
    */
   void adcCallback(std_msgs::Float32MultiArray msg);
 
-private:
+ private:
   // std::string calfilepath_;  // path to the calibration files
-  Calibration *cal_; // struct containing calibration information
-  short sts_;        // return value from functions
+  Calibration *cal_;  // struct containing calibration information
+  short sts_;         // return value from functions
   bool biasInit_ = false;
 
   std::array<float, 6> voltages_{
-      0, 0, 0, 0, 0, 0}; // array to store raw voltage measurements
-  std::array<float, 6> bias_{0, 0, 0, 0, 0, 0}; // array to store bias
+      0, 0, 0, 0, 0, 0};  // array to store raw voltage measurements
+  std::array<float, 6> bias_{0, 0, 0, 0, 0, 0};  // array to store bias
   std::array<float, 6> transformation_{
-      0, 0, 0, 0, 0, 0}; // transform includes a translation
-                         // along the Z-axis and a rotation about the X-axis.
+      0, 0, 0, 0, 0, 0};  // transform includes a translation
+                          // along the Z-axis and a rotation about the X-axis.
 
   std::mutex voltage_mtx_;
 };
 
-#endif // FTCONVERTER_H
+#endif  // FTCONVERTER_H

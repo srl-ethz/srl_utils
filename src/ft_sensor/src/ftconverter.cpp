@@ -129,10 +129,10 @@ void FTConverter::initBias() {
   std::cout << Bias_init_msg << std::endl;
 }
 
-void FTConverter::getMeasurement(std::array<float, 6> &measurement) {
+void FTConverter::getMeasurement(std::array<float, 6> *measurement) {
   // only calculate ft measurements after bias is initialized
   if (biasInit_) {
-    ConvertToFT(cal_, voltages_.data(), measurement.data());
+    ConvertToFT(cal_, voltages_.data(), measurement->data());
   } else {
     ROS_WARN("bias not initialized, please initialize bias first");
   }
@@ -213,7 +213,7 @@ int main(int argc, char **argv) {
     msg.layout.dim[0].stride = 1;
     msg.layout.dim[0].label = "FTReading";
 
-    ft.getMeasurement(ForceTorque);
+    ft.getMeasurement(&ForceTorque);
     msg.data.clear();
     msg.data.assign(ForceTorque.data(), ForceTorque.data() + 6);
     u3_pub.publish(msg);
