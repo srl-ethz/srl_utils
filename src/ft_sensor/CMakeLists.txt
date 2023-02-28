@@ -3,7 +3,7 @@ project(ft_sensor)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
-
+set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE include-what-you-use)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -119,6 +119,7 @@ include_directories(
 include
 include/lib
 ${catkin_INCLUDE_DIRS}
+${CMAKE_SOURCE_DIR}
 )
 
 ## Declare a C++ library
