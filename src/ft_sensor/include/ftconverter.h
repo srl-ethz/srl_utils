@@ -1,5 +1,5 @@
 // Copyright 2022 Sizhe Tian, Soft Robotic Lab, ETH
-// Adatpted from samples in ATI ATIDAQ F/T C Library
+// Adapted from samples in ATI ATIDAQ F/T C Library
 /* ATIDAQ F/T C Library
  * v1.0.4
  * Copyright (c) 2001 ATI Industrial Automation
@@ -50,6 +50,7 @@ class FTConverter {
    *
    */
   void initBias();
+
   /**
    * @brief using most recent voltage results to calculate force/torque
    * measurement and saved in measurement
@@ -57,12 +58,14 @@ class FTConverter {
    *
    */
   void getMeasurement(std::array<float, 6> *measurement);
+
   /**
    * @brief Callback function for the message from labjack u3
    *    check message data dimension and saved it in voltage_
    * @param  {std_msgs::Float32MultiArray} msg :
    */
   void u3Callback(std_msgs::Float32MultiArray msg);
+  
   /**
    * @brief Callback function for the message from adc
    *    check message data dimension and data input range
