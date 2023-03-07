@@ -65,7 +65,7 @@ class FTConverter {
    * @param  {std_msgs::Float32MultiArray} msg :
    */
   void u3Callback(std_msgs::Float32MultiArray msg);
-  
+
   /**
    * @brief Callback function for the message from adc
    *    check message data dimension and data input range
@@ -76,7 +76,8 @@ class FTConverter {
 
  private:
   // std::string calfilepath_;  // path to the calibration files
-  Calibration *cal_;  // struct containing calibration information
+//   Calibration *cal_;  // struct containing calibration information
+  std::unique_ptr<Calibration> cal_; // pointer to struct containing calibration information
   short sts_;         // return value from functions
   bool biasInit_ = false;
 

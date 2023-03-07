@@ -37,19 +37,19 @@
 
 FTConverter::FTConverter(char *calfilepath) {
   // create Calibration struct
-  cal_ = createCalibration(calfilepath, 1);
+  cal_ = std::make_unique<Calibration>(createCalibration(calfilepath, 1));
   if (cal_ == NULL) {
     ROS_ERROR("\nSpecified calibration could not be loaded.\n");
     return;
   }
 
   // No transformation will be applied
-  transformation_ = std::array<float, 6>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  transformation_ = std::array<float, 6>{};
 
   // Set force units.
   // This step is optional; by default, the units are inherited from the
   // calibration file.
-  sts_ = SetForceUnits(cal_, (char *)"N");
+  sts_ = SetForceUnits(cal_.get(), (char *)"N");
   switch (sts_) {
     case 0:
       break;  // successful completion
@@ -67,7 +67,7 @@ FTConverter::FTConverter(char *calfilepath) {
   // Set torque units.
   // This step is optional; by default, the units are inherited from the
   // calibration file.
-  sts_ = SetTorqueUnits(cal_, (char *)"N-m");
+  sts_ = SetTorqueUnits(cal_.get(), (char *)"N-m");
   switch (sts_) {
     case 0:
       break;  // successful completion
@@ -87,7 +87,7 @@ FTConverter::FTConverter(char *calfilepath) {
   // coordinate system. This example tool transform translates the coordinate
   // system 20 mm along the Z-axis and rotates it 45 degrees about the X-axis.
   sts_ =
-      SetToolTransform(cal_, transformation_.data(), (char *)"mm",
+      SetToolTransform(cal_.get(), transformation_.data(), (char *)"mm",
                        (char *)"degrees");
   switch (sts_) {
     case 0:
@@ -109,7 +109,7 @@ FTConverter::FTConverter(char *calfilepath) {
   ros::NodeHandle nh;
 }
 
-FTConverter::~FTConverter() { destroyCalibration(cal_); }
+FTConverter::~FTConverter() { destroyCalibration(cal_.get()); }
 
 void FTConverter::initBias() {
   voltage_mtx_.lock();
@@ -117,7 +117,7 @@ void FTConverter::initBias() {
   voltage_mtx_.unlock();
   biasInit_ = true;
 
-  Bias(cal_, bias_.data());
+  Bias(cal_.get(), bias_.data());
 
   std::string Bias_init_msg = "Bias is initialized to be : [ ";
   for (auto i : bias_) {
@@ -132,7 +132,7 @@ void FTConverter::initBias() {
 void FTConverter::getMeasurement(std::array<float, 6> *measurement) {
   // only calculate ft measurements after bias is initialized
   if (biasInit_) {
-    ConvertToFT(cal_, voltages_.data(), measurement->data());
+    ConvertToFT(cal_.get(), voltages_.data(), measurement->data());
   } else {
     ROS_WARN("bias not initialized, please initialize bias first");
   }
