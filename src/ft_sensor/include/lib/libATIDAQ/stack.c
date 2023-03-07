@@ -25,143 +25,119 @@
 /* stack.c - a dynamically resizing stack
  */
 
-#include <stdlib.h>
+#include "stack.h"
 #include <assert.h>
 #include <stdio.h>
-#include "stack.h"
+#include <stdlib.h>
 
 #define STACK_INIT_SIZE 32
 
 struct stack {
-    unsigned int max_size;
-    unsigned int sp;
-    unsigned int size;
-	unsigned int iter;
-    void **array;
+  unsigned int max_size;
+  unsigned int sp;
+  unsigned int size;
+  unsigned int iter;
+  void **array;
 };
 
-struct stack *
-stack_new(unsigned int max_size)
-{
-    struct stack *s = malloc(sizeof *s);
-    if (s) {
-        s->max_size = max_size;
-        s->size = max_size < STACK_INIT_SIZE ? max_size : STACK_INIT_SIZE;
-        s->sp = 0;
-        s->array = malloc(sizeof *s->array * s->size);
-        if (s->array == NULL) {
-            free(s);
-            s = NULL;
-        }
+struct stack *stack_new(unsigned int max_size) {
+  struct stack *s = malloc(sizeof *s);
+  if (s) {
+    s->max_size = max_size;
+    s->size = max_size < STACK_INIT_SIZE ? max_size : STACK_INIT_SIZE;
+    s->sp = 0;
+    s->array = malloc(sizeof *s->array * s->size);
+    if (s->array == NULL) {
+      free(s);
+      s = NULL;
     }
-    return s;
+  }
+  return s;
 }
-void
-stack_del(struct stack *s, void (*free_data_fn)(void *))
-{
-    if (s == NULL) {
-        return;
+void stack_del(struct stack *s, void (*free_data_fn)(void *)) {
+  if (s == NULL) {
+    return;
+  }
+  if (free_data_fn) {
+    while (s->sp > 0) {
+      free_data_fn(s->array[--(s->sp)]);
     }
-    if (free_data_fn) {
-        while (s->sp > 0) {
-            free_data_fn(s->array[--(s->sp)]);
-        }
-    }
-    free(s->array);
-    free(s);
+  }
+  free(s->array);
+  free(s);
 }
 
-void
-stack_clear(struct stack *s, void (*free_data_fn)(void *))
-{
-    if (s == NULL) {
-        return;
+void stack_clear(struct stack *s, void (*free_data_fn)(void *)) {
+  if (s == NULL) {
+    return;
+  }
+  if (free_data_fn) {
+    while (s->sp > 0) {
+      free_data_fn(s->array[--(s->sp)]);
     }
-    if (free_data_fn) {
-        while (s->sp > 0) {
-            free_data_fn(s->array[--(s->sp)]);
-        }
-    }
+  }
 }
-void
-stack_iterate(struct stack *s)
-{
-	if (s) {
-		s->iter = 0;
-	}
+void stack_iterate(struct stack *s) {
+  if (s) {
+    s->iter = 0;
+  }
 }
-void *
-stack_next(struct stack *s)
-{
-	if (s && s->iter < s->sp) {
-		return s->array[s->iter++];
-	}
-	return NULL;
+void *stack_next(struct stack *s) {
+  if (s && s->iter < s->sp) {
+    return s->array[s->iter++];
+  }
+  return NULL;
 }
-void *
-stack_peek(struct stack *s)
-{
-	if (s == NULL || s->sp == 0) {
-		return NULL;
-	}
-	return s->array[s->sp - 1];
+void *stack_peek(struct stack *s) {
+  if (s == NULL || s->sp == 0) {
+    return NULL;
+  }
+  return s->array[s->sp - 1];
 }
-int
-stack_push(struct stack *s, void *data)
-{
-    if (s == NULL) {
-        return 0;
-    }
-    if (s->sp == s->size) {
-        void **new_array;
-        unsigned int new_size;
+int stack_push(struct stack *s, void *data) {
+  if (s == NULL) {
+    return 0;
+  }
+  if (s->sp == s->size) {
+    void **new_array;
+    unsigned int new_size;
 
-		if (s->size == s->max_size) {
-			return 0;
-		}
-		if (s->size * 2 > s->max_size) {
-			new_size = s->max_size;
-		} else {
-			new_size = s->size * 2;
-		}
+    if (s->size == s->max_size) {
+      return 0;
+    }
+    if (s->size * 2 > s->max_size) {
+      new_size = s->max_size;
+    } else {
+      new_size = s->size * 2;
+    }
 
-        new_array = realloc(s->array, sizeof *s->array * new_size);
-        if (new_array == NULL) {
-            return 0;
-        }
-        s->size = new_size;
-        s->array = new_array;
+    new_array = realloc(s->array, sizeof *s->array * new_size);
+    if (new_array == NULL) {
+      return 0;
     }
-    assert(s->sp >= 0 && s->sp <= s->size);
-    s->array[s->sp++] = data;
-    return 1;
+    s->size = new_size;
+    s->array = new_array;
+  }
+  assert(s->sp >= 0 && s->sp <= s->size);
+  s->array[s->sp++] = data;
+  return 1;
 }
-void *
-stack_pop(struct stack *s)
-{
-    if (s == NULL || s->sp == 0) {
-        return NULL;
-    }
-    if (s->size >= STACK_INIT_SIZE * 4 && s->sp < s->size / 4) {
-        void **new_array;
-        unsigned int new_size = s->size / 2;
+void *stack_pop(struct stack *s) {
+  if (s == NULL || s->sp == 0) {
+    return NULL;
+  }
+  if (s->size >= STACK_INIT_SIZE * 4 && s->sp < s->size / 4) {
+    void **new_array;
+    unsigned int new_size = s->size / 2;
 
-        new_array = realloc(s->array, sizeof *s->array * new_size);
-        if (new_array) {
-            s->array = new_array;
-            s->size = new_size;
-        }
+    new_array = realloc(s->array, sizeof *s->array * new_size);
+    if (new_array) {
+      s->array = new_array;
+      s->size = new_size;
     }
-    assert(s->sp > 0 && s->sp <= s->size);
-    return s->array[--(s->sp)];
+  }
+  assert(s->sp > 0 && s->sp <= s->size);
+  return s->array[--(s->sp)];
 }
-int
-stack_is_empty(const struct stack *s)
-{
-    return s == NULL || s->sp == 0;
-}
-unsigned int
-stack_size(const struct stack *s)
-{
-	return s == NULL ? 0 : s->sp;
-}
+int stack_is_empty(const struct stack *s) { return s == NULL || s->sp == 0; }
+unsigned int stack_size(const struct stack *s) { return s == NULL ? 0 : s->sp; }

@@ -24,10 +24,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/* ftrt.c - routines for realtime calculation of forces and torques from voltages
-modifications
-1.0.4 - Sam Skuce (ATI Industrial Automation) - added newline to end of file to prevent
-	warnings in gcc.
+/* ftrt.c - routines for realtime calculation of forces and torques from
+voltages modifications 1.0.4 - Sam Skuce (ATI Industrial Automation) - added
+newline to end of file to prevent warnings in gcc.
  */
 
 #define MAX_AXES 6
@@ -37,29 +36,31 @@ modifications
 #define FALSE 0
 
 //-------------------------------------------------
-//public interface
+// public interface
 typedef struct RTCoefs RTCoefs;
 typedef int BOOL;
 
 // calibration information required for F/T conversions
 struct RTCoefs {
-	unsigned short NumChannels;
-	unsigned short NumAxes;
-	float working_matrix[MAX_AXES][MAX_GAUGES];
-	float bias_slopes[MAX_GAUGES];
-	float gain_slopes[MAX_GAUGES];
-	float thermistor;
-	float bias_vector[MAX_GAUGES+1];
-	float TCbias_vector[MAX_GAUGES];
+  unsigned short NumChannels;
+  unsigned short NumAxes;
+  float working_matrix[MAX_AXES][MAX_GAUGES];
+  float bias_slopes[MAX_GAUGES];
+  float gain_slopes[MAX_GAUGES];
+  float thermistor;
+  float bias_vector[MAX_GAUGES + 1];
+  float TCbias_vector[MAX_GAUGES];
 };
 
-void RTConvertToFT(RTCoefs *coefs, float voltages[],float result[],BOOL tempcomp);
+void RTConvertToFT(RTCoefs *coefs, float voltages[], float result[],
+                   BOOL tempcomp);
 void RTBias(RTCoefs *coefs, float voltages[]);
 
 //-------------------------------------------------
-//private routines
-//void mmult(float *array1, float *array2, float *result,unsigned short r1,unsigned short c1,unsigned short c2);
+// private routines
+// void mmult(float *array1, float *array2, float *result,unsigned short
+// r1,unsigned short c1,unsigned short c2);
 void mmult(float *a, unsigned short ra, unsigned short ca, unsigned short dca,
-		   float *b, unsigned short cb, unsigned short dcb,
-		   float *c, unsigned short dcc);
-float TempComp(RTCoefs *coefs,float G,float T,unsigned short i);
+           float *b, unsigned short cb, unsigned short dcb, float *c,
+           unsigned short dcc);
+float TempComp(RTCoefs *coefs, float G, float T, unsigned short i);

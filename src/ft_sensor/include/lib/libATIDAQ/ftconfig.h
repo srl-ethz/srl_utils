@@ -25,12 +25,12 @@
 
 /* ftconfig.h - calibration file and configuration routines
 modifications
-1.0.4 - Sam Skuce (ATI Industrial Automation) - added newline to end of file to prevent warnings
-	in gcc.
+1.0.4 - Sam Skuce (ATI Industrial Automation) - added newline to end of file to
+prevent warnings in gcc.
  */
 
-#include "ftrt.h"		// realtime calculations
 #include "dom.h"
+#include "ftrt.h" // realtime calculations
 #define PI 3.14159265358979
 
 typedef char *Units;
@@ -40,34 +40,37 @@ typedef struct Transform Transform;
 
 // note: tool transforms only supported for 6-axis F/T transducers
 struct Transform {
-	float TT[6];        // displacement/rotation vector dx, dy, dz, rx, ry, rz
-	Units DistUnits;    // units of dx, dy, dz
-	Units AngleUnits;   // units of rx, ry, rz
+  float TT[6];      // displacement/rotation vector dx, dy, dz, rx, ry, rz
+  Units DistUnits;  // units of dx, dy, dz
+  Units AngleUnits; // units of rx, ry, rz
 };
 // settings that can be changed by the user
 struct Configuration {
-	Units ForceUnits;        // force units of output
-	Units TorqueUnits;       // torque units of output
-	Transform UserTransform; // coordinate system transform set by user
-	BOOL TempCompEnabled;    // is temperature compensation enabled?
+  Units ForceUnits;        // force units of output
+  Units TorqueUnits;       // torque units of output
+  Transform UserTransform; // coordinate system transform set by user
+  BOOL TempCompEnabled;    // is temperature compensation enabled?
 };
 
 // transducer properties read from calibration file
 struct Calibration {
-	float BasicMatrix[MAX_AXES][MAX_GAUGES];	// non-usable matrix; use rt.working_matrix for calculations
-	Units ForceUnits;                           // force units of basic matrix, as read from file; constant
-	Units TorqueUnits;                          // torque units of basic matrix, as read from file; constant
-	BOOL TempCompAvailable;                     // does this calibration have optional temperature compensation?
-	Transform BasicTransform;                   // built-in coordinate transform; for internal use
-	float MaxLoads[MAX_AXES];					// maximum loads of each axis, in units above
-	char *AxisNames[MAX_AXES];                  // names of each axis
-	char *Serial;                               // serial number of transducer (such as "FT4566")
-	char *BodyStyle;                            // transducer's body style (such as "Delta")
-	char *PartNumber;                           // calibration part number (such as "US-600-3600")
-	char *Family;                               // family of transducer (typ. "DAQ")
-	char *CalDate;                              // date of calibration
-	Configuration cfg;                          // struct containing configurable parameters
-	RTCoefs rt;                                 // struct containing coefficients used in realtime calculations
+  float BasicMatrix[MAX_AXES][MAX_GAUGES]; // non-usable matrix; use
+                                           // rt.working_matrix for calculations
+  Units ForceUnits; // force units of basic matrix, as read from file; constant
+  Units
+      TorqueUnits; // torque units of basic matrix, as read from file; constant
+  BOOL TempCompAvailable;    // does this calibration have optional temperature
+                             // compensation?
+  Transform BasicTransform;  // built-in coordinate transform; for internal use
+  float MaxLoads[MAX_AXES];  // maximum loads of each axis, in units above
+  char *AxisNames[MAX_AXES]; // names of each axis
+  char *Serial;              // serial number of transducer (such as "FT4566")
+  char *BodyStyle;           // transducer's body style (such as "Delta")
+  char *PartNumber;          // calibration part number (such as "US-600-3600")
+  char *Family;              // family of transducer (typ. "DAQ")
+  char *CalDate;             // date of calibration
+  Configuration cfg;         // struct containing configurable parameters
+  RTCoefs rt; // struct containing coefficients used in realtime calculations
 };
 
 #ifdef __cplusplus
@@ -91,7 +94,8 @@ void destroyCalibration(Calibration *cal);
 // Parameters:
 //   cal: initialized Calibration struct
 
-short SetToolTransform(Calibration *cal, float Vector[6],char *DistUnits,char *AngleUnits);
+short SetToolTransform(Calibration *cal, float Vector[6], char *DistUnits,
+                       char *AngleUnits);
 // Performs a 6-axis translation/rotation on the transducer's coordinate system.
 // Parameters:
 //   cal: initialized Calibration struct
@@ -144,7 +148,7 @@ void Bias(Calibration *cal, float voltages[]);
 //   cal: initialized Calibration struct
 //   voltages: array of voltages acuired by DAQ system
 
-void ConvertToFT(Calibration *cal, float voltages[],float result[]);
+void ConvertToFT(Calibration *cal, float voltages[], float result[]);
 // Converts an array of voltages into forces and torques and
 // returns them in result
 // Parameters:
@@ -162,13 +166,15 @@ void ConvertToFT(Calibration *cal, float voltages[],float result[]);
 void ResetDefaults(Calibration *cal);
 short CalcMatrix(Calibration *cal);
 short GetMatrix(Calibration *cal, float *result);
-short TTM(Transform xform,float result[6][6],Units ForceUnits,Units TorqueUnits);
+short TTM(Transform xform, float result[6][6], Units ForceUnits,
+          Units TorqueUnits);
 float ForceConv(char *Units);
 float TorqueConv(char *Units);
 float DistConv(char *Units);
 float AngleConv(char *Units);
-short ReadAttribute(const DOM_Element *elem, char **attValue, char *attName, BOOL required, char *defaultValue);
-void Separate(char *ValueList,float results[],unsigned short numValues);
+short ReadAttribute(const DOM_Element *elem, char **attValue, char *attName,
+                    BOOL required, char *defaultValue);
+void Separate(char *ValueList, float results[], unsigned short numValues);
 unsigned short FindText(char *str, unsigned short StartPos);
 unsigned short FindSpace(char *str, unsigned short StartPos);
-char *mid(char *instr,unsigned short startpos,unsigned short length);
+char *mid(char *instr, unsigned short startpos, unsigned short length);

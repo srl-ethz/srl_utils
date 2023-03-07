@@ -31,7 +31,7 @@ Copyright (c) 1998, 1999 Thai Open Source Software Center Ltd
 #include <windows.h>
 
 #define malloc(x) HeapAlloc(GetProcessHeap(), 0, (x))
-#define calloc(x, y) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, (x)*(y))
+#define calloc(x, y) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, (x) * (y))
 #define free(x) HeapFree(GetProcessHeap(), 0, (x))
 #define realloc(x, y) HeapReAlloc(GetProcessHeap(), 0, x, y)
 #define abort() /* as nothing */
@@ -52,7 +52,7 @@ particular environments. */
 #include "nspr.h"
 #define malloc(x) PR_Malloc((size_t)(x))
 #define realloc(x, y) PR_Realloc((x), (size_t)(y))
-#define calloc(x, y) PR_Calloc((x),(y))
+#define calloc(x, y) PR_Calloc((x), (y))
 #define free(x) PR_Free(x)
 #if PR_BYTES_PER_INT != 4
 #define int int32
