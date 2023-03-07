@@ -14,12 +14,4 @@ xmltok.c)
 
 add_library(ATIDAQ ${HEADER_FILES} ${C_FILES})
 
-
-# message(STATUS "HEADER_FILES : ${HEADER_FILES}")
-# message(STATUS "C_FILES : ${C_FILES}")
-
-# message(STATUS "IMPL : ${IMPL}")
-# message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
-
-
 target_include_directories(ATIDAQ PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
