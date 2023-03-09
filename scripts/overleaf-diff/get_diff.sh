@@ -29,11 +29,12 @@ fi
 
 
 
-hash1=$(git log --grep="$old-label" --pretty=format:'%H')
+hash1=$(git log --grep="$oldlabel" --pretty=format:'%H')
 hash2=$(git log --grep="$newlabel" --pretty=format:'%H')
 
 # checkout old label
 echo "git checkout $oldlabel";
+echo "hash is $hash1"
 git checkout $hash1
 echo "git checkout successful for label $oldlabel";
 
@@ -42,6 +43,7 @@ latexpand "$rootname".tex > "$rootname"_v1_flat.tex
 
 # checkout new label
 echo "git checkout $newlabel";
+echo "hash is $hash2"
 git checkout $hash2
 echo "git checkout successful for label $newlabel";
 
