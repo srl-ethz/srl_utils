@@ -46,6 +46,16 @@ fi
 hash1=$(git log --grep="$oldlabel" --pretty=format:'%H')
 hash2=$(git log --grep="$newlabel" --pretty=format:'%H')
 
+# check if hash is empty
+if [ -z "$hash1" ]; then
+    echo "label [$oldlabel] not found in git log, aborting..."
+    exit 1
+fi
+if [ -z "$hash2" ]; then
+    echo "label [$newlabel] not found in git log, aborting..."
+    exit 1
+fi
+
 # checkout old label
 echo "git checkout $oldlabel";
 echo "hash is $hash1"
