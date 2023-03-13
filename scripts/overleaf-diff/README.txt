@@ -24,7 +24,7 @@ Open the "History" of your Overleaf project and assign a label to the versions y
 Identify the root or main .tex file of your Overleaf project.
 
 Change your Terminals path to where the shell script is currently located at.
-### 
+###
 For Mac users, type "cd " and drag&drop the shell script (get_diff.sh) into the Terminal window. Delete "get_diff.sh" and press enter.
 ###
 

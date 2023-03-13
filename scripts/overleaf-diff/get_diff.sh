@@ -4,14 +4,28 @@
 # exit when any command fails
 set -e
 
+print_readme() {
+    script_dir=$(dirname "$0")
+    readme_file="$script_dir"/README.txt
+    echo "printing $readme_file"
+    cat "$readme_file"
+}
+
+# if no arguments are passed, print the readme
+if [ $# -eq 0 ]; then
+  print_readme
+  exit 1
+fi
+
 # parse input flags
-while getopts i:o:n:r: flag
+while getopts i:o:n:r:h flag
 do
     case "${flag}" in
     	i) idoverleaf=${OPTARG};;
         o) oldlabel=${OPTARG};;
         n) newlabel=${OPTARG};;
         r) rootname=${OPTARG};;
+        h) print_readme; exit 0;;
     esac
 done
 echo "Overleaf Id: $idoverleaf";
