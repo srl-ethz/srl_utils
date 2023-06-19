@@ -1,8 +1,9 @@
 /*
-  intended for Arduino nano 33 BLE board
+  written for Arduino nano 33 BLE board
   read from IMU, do sensor fusion, and send quaternion (wxyz) over serial (TODO: over BLE)
   sensor fusion: https://github.com/aster94/SensorFusion
   reading from sensor: https://github.com/arduino-libraries/Arduino_LSM9DS1
+  if you want really accurate measurements, calibrate the sensor following https://github.com/FemmeVerbeek/Arduino_LSM9DS1
 */
 
 #include <Arduino_LSM9DS1.h>
@@ -43,10 +44,11 @@ void loop()
     gx *= 3.14159 / 180.0;
     gy *= 3.14159 / 180.0;
     gz *= 3.14159 / 180.0;
+
   deltat = fusion.deltatUpdate();
 
-    // fusion.MadgwickUpdate(gx, gy, gz, ax, ay, az, mx, my, mz, deltat);
-    fusion.MadgwickUpdate(gx, gy, gz, ax, ay, az, deltat);
+    // sensor has left hand coordinate system for some reason, so negate y here
+    fusion.MadgwickUpdate(gx, -gy, gz, ax, -ay, az, deltat);
     quatPtr = fusion.getQuat();
 
     // print with 4 decimal places
@@ -57,5 +59,20 @@ void loop()
     Serial.print(quatPtr[2], 4);
     Serial.print(",");
     Serial.println(quatPtr[3], 4);
+
+    // print the raw sensor values, may be helpful for debugging
+    // Serial.print(ax, 4);
+    // Serial.print(",");
+    // Serial.print(ay, 4);
+    // Serial.print(",");
+    // Serial.print(az, 4);
+    // Serial.print(",");
+    // Serial.print(gx, 4);
+    // Serial.print(",");
+    // Serial.print(gy, 4);
+    // Serial.print(",");
+    // Serial.print(gz, 4);
+    // Serial.println();
+
   }
 }
