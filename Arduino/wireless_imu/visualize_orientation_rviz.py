@@ -5,9 +5,13 @@ import serial
 from geometry_msgs.msg import Quaternion
 from visualization_msgs.msg import Marker
 
+"""
+minimal script to receive quaternion data from Arduino and visualize it in rviz
+add the /visualization_marker topic in rviz
+"""
 # Configure the serial connections
 ser = serial.Serial(
-    port='/dev/ttyACM1',  # Change this to your serial port
+    port='/dev/ttyACM0',  # Change this to your serial port
     baudrate=115200,
 )
 
@@ -22,9 +26,10 @@ def publish_marker(quaternion):
     marker.header.frame_id = "map"
     marker.type = marker.CUBE
     marker.action = marker.ADD
-    marker.scale.x = 0.2
-    marker.scale.y = 0.2
-    marker.scale.z = 0.2
+    # try to match dimension of Arduino
+    marker.scale.x = 0.044
+    marker.scale.y = 0.018
+    marker.scale.z = 0.005
     marker.color.a = 1.0
     marker.color.r = 1.0
     marker.color.g = 0.0
