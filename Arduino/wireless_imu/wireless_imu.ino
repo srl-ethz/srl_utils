@@ -30,31 +30,23 @@ SF fusion;
 void loop()
 {
 
-  if (IMU.accelerationAvailable())
+  if (IMU.accelerationAvailable() && IMU.gyroscopeAvailable())
   {
     IMU.readAcceleration(ax, ay, az); // units in g's
     // convert to m/s^2
     ax *= 9.80665;
     ay *= 9.80665;
     az *= 9.80665;
-  }
-  if (IMU.gyroscopeAvailable())
-  {
+
     IMU.readGyroscope(gx, gy, gz); // units degrees / second
     // convert to rads / s
     gx *= 3.14159 / 180.0;
     gy *= 3.14159 / 180.0;
     gz *= 3.14159 / 180.0;
-  }
-  if (IMU.magneticFieldAvailable())
-  {
-    IMU.readMagneticField(mx, my, mz); // units uT
-  }
   deltat = fusion.deltatUpdate();
 
-  if (deltat > 0){
-    fusion.MadgwickUpdate(gx, gy, gz, ax, ay, az, mx, my, mz, deltat);
-
+    // fusion.MadgwickUpdate(gx, gy, gz, ax, ay, az, mx, my, mz, deltat);
+    fusion.MadgwickUpdate(gx, gy, gz, ax, ay, az, deltat);
     quatPtr = fusion.getQuat();
 
     // print with 4 decimal places
