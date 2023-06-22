@@ -26,7 +26,6 @@ void setup()
   }
 
   if (!bleSerial.beginAndSetupBLE("IMUGacha")) {
-    Serial.begin(9600);
     while (true) {
       Serial.println("Failed to initialize HardwareBLESerial!");
       delay(1000);
