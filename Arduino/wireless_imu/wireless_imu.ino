@@ -8,6 +8,9 @@
 
 #include <Arduino_LSM9DS1.h>
 #include "SensorFusion.h"
+#include <HardwareBLESerial.h>
+
+HardwareBLESerial &bleSerial = HardwareBLESerial::getInstance();
 
 void setup()
 {
@@ -21,6 +24,14 @@ void setup()
     while (1)
       ;
   }
+
+  if (!bleSerial.beginAndSetupBLE("IMUGacha")) {
+    Serial.begin(9600);
+    while (true) {
+      Serial.println("Failed to initialize HardwareBLESerial!");
+      delay(1000);
+    }
+  }
 }
 
 float gx, gy, gz, ax, ay, az, mx, my, mz;
@@ -31,19 +42,26 @@ SF fusion;
 void loop()
 {
 
+  // this must be called regularly to perform BLE updates
+  bleSerial.poll();
+
   if (IMU.accelerationAvailable() && IMU.gyroscopeAvailable())
   {
+
+    static const float CONST_g {9.80665};
+    static const float CONST_deg_to_rad {M_PI / 180.0};
+
     IMU.readAcceleration(ax, ay, az); // units in g's
     // convert to m/s^2
-    ax *= 9.80665;
-    ay *= 9.80665;
-    az *= 9.80665;
+    ax *= CONST_g;
+    ay *= CONST_g;
+    az *= CONST_g;
 
     IMU.readGyroscope(gx, gy, gz); // units degrees / second
     // convert to rads / s
-    gx *= 3.14159 / 180.0;
-    gy *= 3.14159 / 180.0;
-    gz *= 3.14159 / 180.0;
+    gx *= CONST_deg_to_rad;
+    gy *= CONST_deg_to_rad;
+    gz *= CONST_deg_to_rad;
 
   deltat = fusion.deltatUpdate();
 
@@ -60,19 +78,12 @@ void loop()
     Serial.print(",");
     Serial.println(quatPtr[3], 4);
 
-    // print the raw sensor values, may be helpful for debugging
-    // Serial.print(ax, 4);
-    // Serial.print(",");
-    // Serial.print(ay, 4);
-    // Serial.print(",");
-    // Serial.print(az, 4);
-    // Serial.print(",");
-    // Serial.print(gx, 4);
-    // Serial.print(",");
-    // Serial.print(gy, 4);
-    // Serial.print(",");
-    // Serial.print(gz, 4);
-    // Serial.println();
-
+    bleSerial.print(quatPtr[0]);
+    bleSerial.print(",");
+    bleSerial.print(quatPtr[1]);
+    bleSerial.print(",");
+    bleSerial.print(quatPtr[2]);
+    bleSerial.print(",");
+    bleSerial.println(quatPtr[3]);
   }
 }
