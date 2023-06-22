@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-minimal script to receive quaternion data from Arduino and visualize it in rviz
+minimal script to receive quaternion data from Arduino over BLE and visualize it in rviz
 add the /visualization_marker topic in rviz
 """
 
