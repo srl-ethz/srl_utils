@@ -56,11 +56,16 @@ async def main():
     target_id = None
 
     # find the device id of the target device
+    is_found = False
     for device_id, info in devices.items():
         if info[0].name == target_name:
             print(f"Found {info[0].name}!")
             target_id = device_id
+            is_found = True
             break
+    if not is_found:
+        print(f"Could not find {target_name}!")
+        return
 
     WRITE_UUID = None
     READ_UUID = None
