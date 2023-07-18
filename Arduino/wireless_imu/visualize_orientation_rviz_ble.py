@@ -33,15 +33,17 @@ def receive_callback(value: bytes):
 
         # parse the line and publish the quaternion
         rx_vals_str = rx_line.split(",")
-        if len(rx_vals_str) == 4:
+        if len(rx_vals_str) == 7:
             rx_vals = [float(x) for x in rx_vals_str]
             quaternion = Quaternion()
             quaternion.x = float(rx_vals[1])
             quaternion.y = float(rx_vals[2])
             quaternion.z = float(rx_vals[3])
             quaternion.w = float(rx_vals[0])
+            gyro_x = float(rx_vals[4])
+            gyro_y = float(rx_vals[5])
+            gyro_z = float(rx_vals[6])
             publish_marker(quaternion)
-            print(f"Quaternion: {quaternion}")
 
 
 async def main():
@@ -87,4 +89,8 @@ async def main():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    asyncio.run(main())
+    # asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print('Interrupted by user')

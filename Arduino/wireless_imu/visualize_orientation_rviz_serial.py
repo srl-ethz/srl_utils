@@ -45,12 +45,15 @@ if __name__ == '__main__':
             if ser.inWaiting():
                 data = ser.readline().decode().strip()  # Read data from serial port
                 q = data.split(',')
-                if len(q) == 4:  # Check if we have 4 components
+                if len(q) == 7:  # Check if we have 4 components
                     quaternion = Quaternion()
                     quaternion.x = float(q[1])
                     quaternion.y = float(q[2])
                     quaternion.z = float(q[3])
                     quaternion.w = float(q[0])
+                    gyro_x = float(q[4])
+                    gyro_y = float(q[5])
+                    gyro_z = float(q[6])
 
                     publish_marker(quaternion)
     except rospy.ROSInterruptException:
