@@ -22,6 +22,10 @@ def receive_callback(value: bytes):
     # print(f"Received [{len(value)}]: {value}")
     time_start = time.time()
     try:
+        # Byte-aligned data
+        # H: unsigned short (2 bytes)
+        # f: float (4 bytes)
+        # <: little-endian
         raw_data = struct.unpack('<H' + 'f' * 7 + 'H', value)
     except struct.error as err:
         print(f"Failed to unpack data: {err}. Raw data: {value}")
