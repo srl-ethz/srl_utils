@@ -40,6 +40,16 @@ void setup()
       delay(1000);
     }
   }
+
+  // below are the calibration results from DIY_Calibration_Accelerometer/Gyroscope in https://github.com/FemmeVerbeek/Arduino_LSM9DS1
+  IMU.setAccelFS(3);
+  IMU.setAccelODR(5);
+  IMU.setAccelOffset(-0.001554, -0.010849, -0.029102);
+  IMU.setAccelSlope (1.003402, 0.998643, 1.003454);
+  IMU.setGyroFS(2);
+  IMU.setGyroODR(5);
+  IMU.setGyroOffset (-0.094818, 0.568848, 0.406097);
+  IMU.setGyroSlope (1.154223, 1.139804, 1.150908);
 }
 
 float gx, gy, gz, ax, ay, az, mx, my, mz;
