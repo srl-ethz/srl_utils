@@ -77,11 +77,14 @@ void loop()
     fusion.MadgwickUpdate(gx, -gy, gz, ax, -ay, az, deltat);
     quatPtr = fusion.getQuat();
 
-    // concatenate quaternion data into a string with four decimal places
+    // concatenate quaternion and gyro data into a string with four decimal places
     String dataToSend = String(quatPtr[0], 4) + "," +
                         String(quatPtr[1], 4) + "," +
                         String(quatPtr[2], 4) + "," +
-                        String(quatPtr[3], 4);
+                        String(quatPtr[3], 4) + "," +
+                        String(gx, 4) + "," +
+                        String(gy, 4) + "," +
+                        String(gz, 4);
 
     if (use_wired_serial)
       Serial.println(dataToSend);
