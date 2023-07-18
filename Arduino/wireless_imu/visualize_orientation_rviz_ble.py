@@ -12,7 +12,7 @@ from ble_serial.scan import main as scanner
 
 from geometry_msgs.msg import Quaternion
 
-from Arduino.wireless_imu.visualize_orientation_rviz_serial import publish_marker
+from visualize_orientation_rviz_serial import publish_marker
 
 
 # Arduino sends quaternion data as a comma-separated string
