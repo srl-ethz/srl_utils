@@ -11,23 +11,32 @@
 #include <HardwareBLESerial.h>
 
 HardwareBLESerial &bleSerial = HardwareBLESerial::getInstance();
-
+bool use_wired_serial = false;  // BLE is always on, wired Serial communication is enabled if the port can be opened at the beginning
 void setup()
 {
   Serial.begin(115200);
-  while (!Serial)
-    ;
+  for (int i = 0; i < 10e3; i++)
+  {
+    // try to connect to Serial port but give up if it doesn't work after many tries
+    if (Serial)
+    {
+      use_wired_serial = true;
+      break;
+    }
+  }
 
   if (!IMU.begin())
   {
-    Serial.println("Failed to initialize IMU!");
+    if (use_wired_serial)
+      Serial.println("Failed to initialize IMU!");
     while (1)
       ;
   }
 
   if (!bleSerial.beginAndSetupBLE("IMUGacha")) {
     while (true) {
-      Serial.println("Failed to initialize HardwareBLESerial!");
+      if (use_wired_serial)
+        Serial.println("Failed to initialize HardwareBLESerial!");
       delay(1000);
     }
   }
@@ -62,7 +71,7 @@ void loop()
     gy *= CONST_deg_to_rad;
     gz *= CONST_deg_to_rad;
 
-  deltat = fusion.deltatUpdate();
+    deltat = fusion.deltatUpdate();
 
     // sensor has left hand coordinate system for some reason, so negate y here
     fusion.MadgwickUpdate(gx, -gy, gz, ax, -ay, az, deltat);
@@ -74,17 +83,8 @@ void loop()
                         String(quatPtr[2], 4) + "," +
                         String(quatPtr[3], 4);
 
-    bleSerial.print(quatPtr[0]);
-    bleSerial.print(",");
-    bleSerial.print(quatPtr[1]);
-    bleSerial.print(",");
-    bleSerial.print(quatPtr[2]);
-    bleSerial.print(",");
-    bleSerial.println(quatPtr[3]);
-    // print the angular velocity too
-    Serial.println("Angular velocity");
-    Serial.println(gx);
-    Serial.println(gy);
-    Serial.println(gz);
+    if (use_wired_serial)
+      Serial.println(dataToSend);
+    bleSerial.println(dataToSend.c_str());
   }
 }
