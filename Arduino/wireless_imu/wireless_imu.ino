@@ -77,12 +77,17 @@ void loop()
     Serial.print(",");
     Serial.println(quatPtr[3], 4);
 
-    bleSerial.print(quatPtr[0]);
-    bleSerial.print(",");
-    bleSerial.print(quatPtr[1]);
-    bleSerial.print(",");
-    bleSerial.print(quatPtr[2]);
-    bleSerial.print(",");
-    bleSerial.println(quatPtr[3]);
+    // bleSerial.print(quatPtr[0]);
+    // bleSerial.print(",");
+    // bleSerial.print(quatPtr[1]);
+    // bleSerial.print(",");
+    // bleSerial.print(quatPtr[2]);
+    // bleSerial.print(",");
+    // bleSerial.println(quatPtr[3]);
+    // print the angular velocity too
+    Serial.println("Angular velocity");
+    Serial.println(gx);
+    Serial.println(gy);
+    Serial.println(gz);
   }
 }
