@@ -9,11 +9,6 @@ from visualization_msgs.msg import Marker
 minimal script to receive quaternion data from Arduino and visualize it in rviz
 add the /visualization_marker topic in rviz
 """
-# Configure the serial connections
-ser = serial.Serial(
-    port='/dev/ttyACM0',  # Change this to your serial port
-    baudrate=115200,
-)
 
 # Initialize ROS Node
 rospy.init_node('quaternion_visualization')
@@ -38,22 +33,25 @@ def publish_marker(quaternion):
 
     marker_pub.publish(marker)
 
-def read_quaternion():
-    while not rospy.is_shutdown():
-        if ser.inWaiting():
-            data = ser.readline().decode().strip()  # Read data from serial port
-            q = data.split(',')
-            if len(q) == 4:  # Check if we have 4 components
-                quaternion = Quaternion()
-                quaternion.x = float(q[1])
-                quaternion.y = float(q[2])
-                quaternion.z = float(q[3])
-                quaternion.w = float(q[0])
-
-                publish_marker(quaternion)
 
 if __name__ == '__main__':
+    # Configure the serial connections
+    ser = serial.Serial(
+        port='/dev/ttyACM0',  # Change this to your serial port
+        baudrate=115200,
+    )
     try:
-        read_quaternion()
+        while not rospy.is_shutdown():
+            if ser.inWaiting():
+                data = ser.readline().decode().strip()  # Read data from serial port
+                q = data.split(',')
+                if len(q) == 4:  # Check if we have 4 components
+                    quaternion = Quaternion()
+                    quaternion.x = float(q[1])
+                    quaternion.y = float(q[2])
+                    quaternion.z = float(q[3])
+                    quaternion.w = float(q[0])
+
+                    publish_marker(quaternion)
     except rospy.ROSInterruptException:
         pass
