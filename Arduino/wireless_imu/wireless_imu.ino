@@ -68,14 +68,11 @@ void loop()
     fusion.MadgwickUpdate(gx, -gy, gz, ax, -ay, az, deltat);
     quatPtr = fusion.getQuat();
 
-    // print with 4 decimal places
-    Serial.print(quatPtr[0], 4);
-    Serial.print(",");
-    Serial.print(quatPtr[1], 4);
-    Serial.print(",");
-    Serial.print(quatPtr[2], 4);
-    Serial.print(",");
-    Serial.println(quatPtr[3], 4);
+    // concatenate quaternion data into a string with four decimal places
+    String dataToSend = String(quatPtr[0], 4) + "," +
+                        String(quatPtr[1], 4) + "," +
+                        String(quatPtr[2], 4) + "," +
+                        String(quatPtr[3], 4);
 
     bleSerial.print(quatPtr[0]);
     bleSerial.print(",");
