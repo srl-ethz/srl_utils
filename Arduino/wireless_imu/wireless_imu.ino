@@ -10,8 +10,23 @@
 #include "SensorFusion.h"
 #include <HardwareBLESerial.h>
 
+struct __attribute__((packed)) packed_struct_bytearray
+{
+  uint16_t start_bytes_u16;
+  float data[7];
+  uint16_t end_bytes_u16;
+};
+
+typedef union union_struct
+{
+  struct packed_struct_bytearray packed
+  {
+  };
+  uint8_t b[32];
+} ufloat8x32;
+
 HardwareBLESerial &bleSerial = HardwareBLESerial::getInstance();
-bool use_wired_serial = false;  // BLE is always on, wired Serial communication is enabled if the port can be opened at the beginning
+bool use_wired_serial = false; // BLE is always on, wired Serial communication is enabled if the port can be opened at the beginning
 void setup()
 {
   Serial.begin(115200);
@@ -33,8 +48,10 @@ void setup()
       ;
   }
 
-  if (!bleSerial.beginAndSetupBLE("IMUGacha")) {
-    while (true) {
+  if (!bleSerial.beginAndSetupBLE("IMUGacha"))
+  {
+    while (true)
+    {
       if (use_wired_serial)
         Serial.println("Failed to initialize HardwareBLESerial!");
       delay(1000);
@@ -45,17 +62,19 @@ void setup()
   IMU.setAccelFS(3);
   IMU.setAccelODR(5);
   IMU.setAccelOffset(-0.001554, -0.010849, -0.029102);
-  IMU.setAccelSlope (1.003402, 0.998643, 1.003454);
+  IMU.setAccelSlope(1.003402, 0.998643, 1.003454);
   IMU.setGyroFS(2);
   IMU.setGyroODR(5);
-  IMU.setGyroOffset (-0.094818, 0.568848, 0.406097);
-  IMU.setGyroSlope (1.154223, 1.139804, 1.150908);
+  IMU.setGyroOffset(-0.094818, 0.568848, 0.406097);
+  IMU.setGyroSlope(1.154223, 1.139804, 1.150908);
 }
 
 float gx, gy, gz, ax, ay, az, mx, my, mz;
 float *quatPtr;
 float deltat;
 SF fusion;
+
+// auto time_start = millis();
 
 void loop()
 {
@@ -66,8 +85,8 @@ void loop()
   if (IMU.accelerationAvailable() && IMU.gyroscopeAvailable())
   {
 
-    static const float CONST_g {9.80665};
-    static const float CONST_deg_to_rad {M_PI / 180.0};
+    static const float CONST_g{9.80665};
+    static const float CONST_deg_to_rad{M_PI / 180.0};
 
     IMU.readAcceleration(ax, ay, az); // units in g's
     // convert to m/s^2
@@ -87,17 +106,24 @@ void loop()
     fusion.MadgwickUpdate(gx, -gy, gz, ax, -ay, az, deltat);
     quatPtr = fusion.getQuat();
 
-    // concatenate quaternion and gyro data into a string with four decimal places
-    String dataToSend = String(quatPtr[0], 4) + "," +
-                        String(quatPtr[1], 4) + "," +
-                        String(quatPtr[2], 4) + "," +
-                        String(quatPtr[3], 4) + "," +
-                        String(gx, 4) + "," +
-                        String(gy, 4) + "," +
-                        String(gz, 4);
+    // const auto time_end = millis();
+
+    ufloat8x32 dataToSend;
+    dataToSend.packed.start_bytes_u16 = 0xFCFD;
+    dataToSend.packed.data[0] = quatPtr[0];
+    // time_start = time_end;
+    dataToSend.packed.data[1] = quatPtr[1];
+    dataToSend.packed.data[2] = quatPtr[2];
+    dataToSend.packed.data[3] = quatPtr[3];
+    dataToSend.packed.data[4] = gx;
+    dataToSend.packed.data[5] = gy;
+    dataToSend.packed.data[6] = gz;
+    dataToSend.packed.end_bytes_u16 = 0xFAFB;
 
     if (use_wired_serial)
-      Serial.println(dataToSend);
-    bleSerial.println(dataToSend.c_str());
+    {
+      Serial.write(dataToSend.b, 32);
+    }
+    bleSerial.write_buf(dataToSend.b, 32);
   }
 }

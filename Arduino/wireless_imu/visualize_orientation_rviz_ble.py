@@ -6,45 +6,48 @@ add the /visualization_marker topic in rviz
 """
 
 import asyncio, logging
-
+import time
 from ble_serial.bluetooth.ble_interface import BLE_interface
 from ble_serial.scan import main as scanner
 
+import struct
 from geometry_msgs.msg import Quaternion
 
 from visualize_orientation_rviz_serial import publish_marker
 
-
-# Arduino sends quaternion data as a comma-separated string
-# e.g. "1.0,0.0,0.0,0.0\n". This buffer holds the string until a newline is
-# received, then parses the string and publishes the quaternion.
-str_buffer = ""
-
+msg_time = time.time()
 
 # callback for BLE_interface
 def receive_callback(value: bytes):
-    global str_buffer
-    str_buffer += value.decode()
-    if "\n" in str_buffer:
-        # parse the string and look for a newline
-        newline_idx = str_buffer.index("\n")
-        rx_line = str_buffer[:newline_idx]
-        str_buffer = str_buffer[newline_idx + 1 :]
+    # print(f"Received [{len(value)}]: {value}")
+    time_start = time.time()
+    try:
+        raw_data = struct.unpack('<H' + 'f' * 7 + 'H', value)
+    except struct.error as err:
+        print(f"Failed to unpack data: {err}. Raw data: {value}")
+        return
 
-        # parse the line and publish the quaternion
-        rx_vals_str = rx_line.split(",")
-        if len(rx_vals_str) == 7:
-            rx_vals = [float(x) for x in rx_vals_str]
-            quaternion = Quaternion()
-            quaternion.x = float(rx_vals[1])
-            quaternion.y = float(rx_vals[2])
-            quaternion.z = float(rx_vals[3])
-            quaternion.w = float(rx_vals[0])
-            gyro_x = float(rx_vals[4])
-            gyro_y = float(rx_vals[5])
-            gyro_z = float(rx_vals[6])
-            publish_marker(quaternion)
+    try:
+        start_byte, qw, qx, qy, qz, gyro_x, gyro_y, gyro_z, end_byte = raw_data
+    except ValueError as err:
+        print(f"Failed to unpack data: {err}. Unpacked struct data: {raw_data}")
+        return
 
+    if start_byte != 0xFCFD or end_byte != 0xFAFB:
+        print(f"Invalid start/end bytes: {start_byte}, {end_byte}")
+        return
+
+    global msg_time
+    time_now = time.time()
+    # print(f"[{time_now-msg_time:.4}][{time_now-time_start:.4}] Quaternion: {qw}, {qx}, {qy}, {qz} | Gyro: {gyro_x}, {gyro_y}, {gyro_z}")
+    msg_time = time_now
+
+    quaternion = Quaternion()
+    quaternion.w = float(qw)
+    quaternion.x = float(qx)
+    quaternion.y = float(qy)
+    quaternion.z = float(qz)
+    publish_marker(quaternion)
 
 async def main():
     ### general scan
