@@ -1,6 +1,6 @@
 /*
   written for Arduino nano 33 BLE board
-  read from IMU, do sensor fusion, and send quaternion (wxyz) over serial (TODO: over BLE)
+  read from IMU, do sensor fusion, and send quaternion (wxyz) and rotational velocity (rx, ry, rz in rad/s) data over serial and BLE
   sensor fusion: https://github.com/aster94/SensorFusion
   reading from sensor: https://github.com/arduino-libraries/Arduino_LSM9DS1
   if you want really accurate measurements, calibrate the sensor following https://github.com/FemmeVerbeek/Arduino_LSM9DS1
