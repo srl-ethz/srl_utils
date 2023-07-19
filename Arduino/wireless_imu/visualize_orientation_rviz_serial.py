@@ -2,7 +2,7 @@
 
 import rospy
 import serial
-from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Quaternion, QuaternionStamped, TwistStamped
 from visualization_msgs.msg import Marker
 
 """
@@ -15,8 +15,27 @@ rospy.init_node('quaternion_visualization')
 
 # Publisher for the Marker message for rviz
 marker_pub = rospy.Publisher('visualization_marker', Marker, queue_size=10)
+quatstamped_pub = rospy.Publisher('imu/quat', QuaternionStamped, queue_size=10)
+twiststamped_pub = rospy.Publisher('imu/gyro', TwistStamped, queue_size=10)
 
-def publish_marker(quaternion):
+def publish_QuaternionStamped(qw, qx, qy, qz):
+    msg = QuaternionStamped()
+    msg.header.stamp = rospy.Time.now()
+    msg.quaternion.w = qw
+    msg.quaternion.x = qx
+    msg.quaternion.y = qy
+    msg.quaternion.z = qz
+    quatstamped_pub.publish(msg)
+
+def publish_TwistStamped(gyro_x, gyro_y, gyro_z):
+    msg = TwistStamped()
+    msg.header.stamp = rospy.Time.now()
+    msg.twist.angular.x = gyro_x
+    msg.twist.angular.y = gyro_y
+    msg.twist.angular.z = gyro_z
+    twiststamped_pub.publish(msg)
+
+def publish_marker(qw, qx, qy, qz):
     marker = Marker()
     marker.header.frame_id = "map"
     marker.type = marker.CUBE
@@ -29,6 +48,13 @@ def publish_marker(quaternion):
     marker.color.r = 1.0
     marker.color.g = 0.0
     marker.color.b = 0.0
+    
+    quaternion = Quaternion()
+    quaternion.w = float(qw)
+    quaternion.x = float(qx)
+    quaternion.y = float(qy)
+    quaternion.z = float(qz)
+
     marker.pose.orientation = quaternion
 
     marker_pub.publish(marker)

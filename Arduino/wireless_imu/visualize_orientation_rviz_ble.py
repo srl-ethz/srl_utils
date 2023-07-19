@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-minimal script to receive quaternion data from Arduino over BLE and visualize it in rviz
+minimal script to receive quaternion and rotational velocity data from Arduino over BLE and visualize it in rviz
 add the /visualization_marker topic in rviz
 """
 
@@ -11,9 +11,8 @@ from ble_serial.bluetooth.ble_interface import BLE_interface
 from ble_serial.scan import main as scanner
 
 import struct
-from geometry_msgs.msg import Quaternion
 
-from visualize_orientation_rviz_serial import publish_marker
+from visualize_orientation_rviz_serial import publish_marker, publish_QuaternionStamped, publish_TwistStamped
 
 msg_time = time.time()
 
@@ -46,12 +45,9 @@ def receive_callback(value: bytes):
     # print(f"[{time_now-msg_time:.4}][{time_now-time_start:.4}] Quaternion: {qw}, {qx}, {qy}, {qz} | Gyro: {gyro_x}, {gyro_y}, {gyro_z}")
     msg_time = time_now
 
-    quaternion = Quaternion()
-    quaternion.w = float(qw)
-    quaternion.x = float(qx)
-    quaternion.y = float(qy)
-    quaternion.z = float(qz)
-    publish_marker(quaternion)
+    publish_marker(qw, qx, qy, qz)
+    publish_QuaternionStamped(qw, qx, qy, qz)
+    publish_TwistStamped(gyro_x, gyro_y, gyro_z)
 
 async def main():
     ### general scan
