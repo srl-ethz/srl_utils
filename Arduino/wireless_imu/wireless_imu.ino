@@ -1,9 +1,5 @@
 /*
-  written for Arduino nano 33 BLE board
-  read from IMU, do sensor fusion, and send quaternion (wxyz) and rotational velocity (rx, ry, rz in rad/s) data over serial and BLE
-  sensor fusion: https://github.com/aster94/SensorFusion
-  reading from sensor: https://github.com/arduino-libraries/Arduino_LSM9DS1
-  if you want really accurate measurements, calibrate the sensor following https://github.com/FemmeVerbeek/Arduino_LSM9DS1
+  check README for usage
 */
 
 #include <Arduino_LSM9DS1.h>
@@ -59,22 +55,21 @@ void setup()
   }
 
   // below are the calibration results from DIY_Calibration_Accelerometer/Gyroscope in https://github.com/FemmeVerbeek/Arduino_LSM9DS1
-  IMU.setAccelFS(3);
-  IMU.setAccelODR(5);
-  IMU.setAccelOffset(-0.001554, -0.010849, -0.029102);
-  IMU.setAccelSlope(1.003402, 0.998643, 1.003454);
-  IMU.setGyroFS(2);
-  IMU.setGyroODR(5);
-  IMU.setGyroOffset(-0.094818, 0.568848, 0.406097);
-  IMU.setGyroSlope(1.154223, 1.139804, 1.150908);
+  // run calibration and update these values if you want better accuracy
+  // IMU.setAccelFS(3);
+  // IMU.setAccelODR(5);
+  // IMU.setAccelOffset(-0.001554, -0.010849, -0.029102);
+  // IMU.setAccelSlope(1.003402, 0.998643, 1.003454);
+  // IMU.setGyroFS(2);
+  // IMU.setGyroODR(5);
+  // IMU.setGyroOffset(-0.094818, 0.568848, 0.406097);
+  // IMU.setGyroSlope(1.154223, 1.139804, 1.150908);
 }
 
 float gx, gy, gz, ax, ay, az, mx, my, mz;
 float *quatPtr;
 float deltat;
 SF fusion;
-
-// auto time_start = millis();
 
 void loop()
 {
@@ -111,7 +106,6 @@ void loop()
     ufloat8x32 dataToSend;
     dataToSend.packed.start_bytes_u16 = 0xFCFD;
     dataToSend.packed.data[0] = quatPtr[0];
-    // time_start = time_end;
     dataToSend.packed.data[1] = quatPtr[1];
     dataToSend.packed.data[2] = quatPtr[2];
     dataToSend.packed.data[3] = quatPtr[3];
