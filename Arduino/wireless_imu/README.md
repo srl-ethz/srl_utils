@@ -14,6 +14,8 @@ requires some custom libraries- check setup steps
 ## usage
 sample programs use ROS and publish the orientation data to the *visualization_marker* topic- you can use rviz to visualize it as a red box
 
+![](rviz_screenshot.png)
+
 ## sensor calibration (optional)
 if you want really accurate measurements, calibrate the sensor using FemmeVerbeek's fork of Arduino_LSM9DS1 https://github.com/FemmeVerbeek/Arduino_LSM9DS1
 [video tutorial](https://www.youtube.com/watch?v=BLvYFXoP33o)
