@@ -8,7 +8,7 @@ requires some custom libraries- check setup steps
 2. install these libraries with Arduino IDE's library manager:
     - [Arduino_LSM9DS1](https://github.com/arduino-libraries/Arduino_LSM9DS1)
     - [SensorFusion](https://github.com/aster94/SensorFusion)
-    - 
+    - [ArduinoBLE](https://github.com/arduino-libraries/ArduinoBLE)
 3. manually install the *feat.write_buf* branch of SRL's fork of HardwareBLESerial, which implements the `write_buf()` function : https://github.com/srl-ethz/Arduino-HardwareBLESerial/tree/feat.write_buf (download / git clone the repository into your ~/Arduino/libraries/ directory)
 
 ## usage
