@@ -1,9 +1,13 @@
-import cv2
-from PIL import Image
-import numpy as np
 import argparse
 
-def video2imagesequence(video_path, interval_seconds, top_left_corner, crop_size):
+import cv2
+import numpy as np
+from PIL import Image
+
+
+def video2imagesequence(
+    video_path, interval_seconds, top_left_corner, crop_size
+):
     """
     Extracts images from a video at a specific interval and crops them to a specified size. Also saves a tiled image.
     Useful for showing experiments in papers.
@@ -15,8 +19,10 @@ def video2imagesequence(video_path, interval_seconds, top_left_corner, crop_size
     :param top_left_corner: Tuple specifying the top-left corner (x, y) of the crop area.
     :param crop_size: Tuple specifying the crop size (width, height).
     """
-    print(f"Extracting images from {video_path} at {interval_seconds} second intervals \
-           and cropping to {crop_size} starting from {top_left_corner}")
+    print(
+        f"Extracting images from {video_path} at {interval_seconds} second intervals \
+           and cropping to {crop_size} starting from {top_left_corner}"
+    )
     # Open the video file
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -66,18 +72,37 @@ def video2imagesequence(video_path, interval_seconds, top_left_corner, crop_size
     cv2.imwrite(tiled_image_path, tiled_image)
     print(f"Saved tiled image: {tiled_image_path}")
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Extract and crop images from a video.")
+    parser = argparse.ArgumentParser(
+        description="Extract and crop images from a video."
+    )
     parser.add_argument("video_path", help="Path to the video file")
-    parser.add_argument("interval_seconds", type=int, help="Interval in seconds at which to extract images")
-    parser.add_argument("top_left_x", type=int, help="X coordinate (i.e. distance from left edge) of the top-left corner of the crop area")
-    parser.add_argument("top_left_y", type=int, help="Y coordinate (i.e. distance from top edge) of the top-left corner of the crop area")
+    parser.add_argument(
+        "interval_seconds",
+        type=int,
+        help="Interval in seconds at which to extract images",
+    )
+    parser.add_argument(
+        "top_left_x",
+        type=int,
+        help="X coordinate (i.e. distance from left edge) of the top-left corner of the crop area",
+    )
+    parser.add_argument(
+        "top_left_y",
+        type=int,
+        help="Y coordinate (i.e. distance from top edge) of the top-left corner of the crop area",
+    )
     parser.add_argument("crop_width", type=int, help="Width of the crop area")
-    parser.add_argument("crop_height", type=int, help="Height of the crop area")
+    parser.add_argument(
+        "crop_height", type=int, help="Height of the crop area"
+    )
 
     args = parser.parse_args()
 
     top_left_corner = (args.top_left_x, args.top_left_y)
     crop_size = (args.crop_width, args.crop_height)
 
-    video2imagesequence(args.video_path, args.interval_seconds, top_left_corner, crop_size)
+    video2imagesequence(
+        args.video_path, args.interval_seconds, top_left_corner, crop_size
+    )

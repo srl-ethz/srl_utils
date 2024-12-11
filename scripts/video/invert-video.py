@@ -1,11 +1,14 @@
 #!/Users/gavin/opt/miniforge3/bin/python3
 
-import cv2
 import os
 import sys
 
+import cv2
+
 if len(sys.argv) < 2:
-    print("Please provide the path to the MP4 video as a command-line argument.")
+    print(
+        "Please provide the path to the MP4 video as a command-line argument."
+    )
     sys.exit(1)
 
 video_path = sys.argv[1]
@@ -26,7 +29,7 @@ width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Create the video writer
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
 
 # Process each frame and write the inverted frame to the output video
