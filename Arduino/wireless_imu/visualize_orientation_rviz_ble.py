@@ -5,14 +5,18 @@ minimal script to receive quaternion and rotational velocity data from Arduino o
 add the /visualization_marker topic in rviz
 """
 
-import asyncio, logging
+import asyncio
+import logging
+import struct
 import time
+
 from ble_serial.bluetooth.ble_interface import BLE_interface
 from ble_serial.scan import main as scanner
-
-import struct
-
-from visualize_orientation_rviz_serial import publish_marker, publish_QuaternionStamped, publish_TwistStamped
+from visualize_orientation_rviz_serial import (
+    publish_marker,
+    publish_QuaternionStamped,
+    publish_TwistStamped,
+)
 
 msg_time = time.time()
 
@@ -25,7 +29,7 @@ def receive_callback(value: bytes):
         # H: unsigned short (2 bytes)
         # f: float (4 bytes)
         # <: little-endian
-        raw_data = struct.unpack('<H' + 'f' * 7 + 'H', value)
+        raw_data = struct.unpack("<H" + "f" * 7 + "H", value)
     except struct.error as err:
         print(f"Failed to unpack data: {err}. Raw data: {value}")
         return
@@ -33,7 +37,9 @@ def receive_callback(value: bytes):
     try:
         start_byte, qw, qx, qy, qz, gyro_x, gyro_y, gyro_z, end_byte = raw_data
     except ValueError as err:
-        print(f"Failed to unpack data: {err}. Unpacked struct data: {raw_data}")
+        print(
+            f"Failed to unpack data: {err}. Unpacked struct data: {raw_data}"
+        )
         return
 
     if start_byte != 0xFCFD or end_byte != 0xFAFB:
@@ -48,6 +54,7 @@ def receive_callback(value: bytes):
     publish_marker(qw, qx, qy, qz)
     publish_QuaternionStamped(qw, qx, qy, qz)
     publish_TwistStamped(gyro_x, gyro_y, gyro_z)
+
 
 async def main():
     ### general scan
@@ -96,4 +103,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print('Interrupted by user')
+        print("Interrupted by user")
