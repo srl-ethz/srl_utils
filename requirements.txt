@@ -1,5 +1,8 @@
 click
 opencv-contrib-python
 pdoc3
+Pillow
 pre-commit
 pyserial
+tkinter
+tkinterdnd2
