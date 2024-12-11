@@ -86,6 +86,8 @@ if __name__ == "__main__":
                     gyro_y = float(q[5])
                     gyro_z = float(q[6])
 
-                    publish_marker(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+                    publish_marker(
+                        quaternion.x, quaternion.y, quaternion.z, quaternion.w
+                    )
     except rospy.ROSInterruptException:
         pass
