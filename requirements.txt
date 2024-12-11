@@ -4,5 +4,5 @@ pdoc3
 Pillow
 pre-commit
 pyserial
-tkinter
+tk
 tkinterdnd2
